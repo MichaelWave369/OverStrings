@@ -1,41 +1,45 @@
-# OverStrings v0.1.0 (Seed Release)
+# OverStrings v0.1.0-alpha
 
 OverStrings is the software soul of the instrument: a local-first, inspectable control surface and resonance engine foundation for the Parallax ecosystem.
 
-This seed release is intentionally practical:
-- **Real today:** a runnable Rust workspace, working `overstrings` CLI, deterministic resonance/tuning/pulse/continuity behaviors, textual and JSON mandala output, local session artifacts, and integration status reporting.
-- **Planned later:** live hardware resonance control, full SIGLStudio live bridge, Trellis runtime hookups, and advanced rendering/audio backends.
+## v0.1.0-alpha scope
 
-## Why this release exists
+### Real now
+- Runnable Rust workspace with a working `overstrings` CLI.
+- Deterministic tuning, pulse, mandala fallback rendering, and continuity diagnostics.
+- Local session state and exports in `.overstrings/`.
+- Honest Trellis/SIGLStudio status/export modules.
 
-v0.1.0 establishes architecture and developer workflow while staying honest about current capability. It does **not** pretend physical hardware or distributed networking features that are not implemented yet.
+### Intentionally deferred
+- Live hardware control.
+- Real-time distributed networking.
+- Trellis live runtime bridge.
+- SIGLStudio live session bridge.
 
-## Build
+## Build and quickstart
 
 ```bash
 cargo build
+cargo run -p overstrings-cli -- --help
+cargo run -p overstrings-cli -- play --profile vineyard --seed 432.0
 ```
 
-Run the CLI:
-
-```bash
-cargo run -p overstrings-cli -- <command>
-```
+State is stored in `.overstrings/` by default, or choose a custom path with `--state-dir`.
 
 ## Command reference
 
-- `overstrings play` — start a local live session report and persist session state.
-- `overstrings tune` — show golden-ratio anchored tuning bands from a seed frequency.
-- `overstrings mandala` — render a textual fallback or export JSON mandala frame.
-- `overstrings pulse` — run/report a deterministic 10 Hz PrimeBeat session simulation.
+- `overstrings play` — start a local session and persist state.
+- `overstrings tune` — compute golden-ratio tuning bands.
+- `overstrings mandala` — render textual fallback or JSON export.
+- `overstrings pulse` — run deterministic 10 Hz pulse simulation.
 - `overstrings continuity` — compute continuity diagnostics from local state.
-- `overstrings status` — concise snapshot of runtime, integration, and shield state.
-- `overstrings version` — print version/build information.
+- `overstrings status` — print concise operational snapshot.
+- `overstrings version` — print version/build info.
 
-## Demo flow
+## Evaluator demo commands
 
 ```bash
-cargo run -p overstrings-cli -- play --profile vineyard
+cargo run -p overstrings-cli -- play --profile vineyard --seed 432.0
 cargo run -p overstrings-cli -- tune --seed 432.0
 cargo run -p overstrings-cli -- pulse --cycles 12
 cargo run -p overstrings-cli -- mandala --format text
@@ -45,24 +49,10 @@ cargo run -p overstrings-cli -- status
 cargo run -p overstrings-cli -- version
 ```
 
-## Local-first state
+## Integration status in this alpha
 
-OverStrings stores deterministic, inspectable artifacts in `.overstrings/`:
-- `session.json` — latest session state snapshot.
-- optional command exports such as mandala JSON artifacts.
+- **Trellis**: discovery/install-hook intent reporting only.
+- **SIGLStudio**: structured export artifact generation only.
+- No hidden network daemon and no fake live bridge.
 
-## Integration status in v0.1
-
-- **Trellis:** discovery/install-hook intent reporting and extension points only.
-- **SIGLStudio:** structured export payload generation only.
-- **No fake live bridge** and no hidden network process.
-
-## Non-goals for v0.1
-
-- Real-time distributed resonance networking
-- Hard GPU renderer requirement
-- Physical-hardware lock-in
-- Fake Trellis/SIGLStudio live integrations
-- Blockchain/token subsystems
-
-See `docs/` for architecture and metrics details.
+See `docs/` for architecture, CLI behavior, integration posture, tuning formulas, and continuity metrics.

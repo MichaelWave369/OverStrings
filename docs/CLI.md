@@ -2,8 +2,11 @@
 
 Binary name: `overstrings`
 
+Global options:
+- `--state-dir <PATH>`: override the local artifact directory (default `.overstrings`).
+
 ## `play`
-Starts/updates session state and prints active profile, tuning seed, render mode, and shield status.
+Starts/updates session state and prints active profile, seed frequency, render mode, and save location.
 
 ## `tune`
 Computes a golden-ratio anchored tuning profile from `--seed` (default `432.0`).
@@ -17,7 +20,7 @@ Renders current state as:
 Simulates deterministic 10 Hz PrimeBeat cycles (`--cycles`, default `10`).
 
 ## `continuity`
-Prints continuity metrics derived from session and pulse characteristics.
+Prints deterministic continuity metrics from session + pulse state.
 
 ## `status`
 Concise operational snapshot including integration readiness and shield posture.

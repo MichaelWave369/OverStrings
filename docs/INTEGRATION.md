@@ -1,14 +1,14 @@
-# Integration Notes (v0.1.0)
+# Integration Notes (v0.1.0-alpha)
 
 ## Trellis
 
 Current behavior:
 - reports discovery/install hook intent
-- declares required environment contract
 - no runtime coupling or fake daemon process
 
-Future:
+Deferred:
 - explicit driver contract and capability probing
+- live runtime bridge
 
 ## SIGLStudio
 
@@ -17,12 +17,10 @@ Current behavior:
 - payload is inspectable JSON artifact
 - no live socket/session bridge
 
-Future:
+Deferred:
 - negotiated live transport and timeline sync
+- live bridge implementation
 
-## Design principle
+## Honesty principle
 
-Every integration module in v0.1 must be truthful:
-- expose what exists
-- clearly mark what is planned
-- keep local behavior deterministic when dependencies are absent
+Integration modules in v0.1.0-alpha must clearly distinguish implemented behavior from deferred behavior.

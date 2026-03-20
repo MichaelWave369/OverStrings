@@ -8,9 +8,16 @@ use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Parser, Debug)]
-#[command(name = "overstrings", version, about = "OverStrings CLI seed release")]
+#[command(
+    name = "overstrings",
+    version,
+    about = "OverStrings CLI (v0.1 seed foundation)",
+    long_about = "CLI-first, local-first resonance control surface for OverStrings.",
+    arg_required_else_help = true
+)]
 struct Cli {
-    #[arg(long, default_value = ".overstrings")]
+    /// Local state directory for inspectable session artifacts.
+    #[arg(long, default_value = ".overstrings", global = true)]
     state_dir: PathBuf,
 
     #[command(subcommand)]
@@ -19,28 +26,41 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
+    /// Start a live local session and persist state.
     Play {
+        /// Profile name for this session.
         #[arg(long, default_value = "default")]
         profile: String,
+        /// Seed frequency in Hz.
         #[arg(long, default_value_t = 432.0)]
         seed: f64,
     },
+    /// Compute and print the tuning ladder for a seed frequency.
     Tune {
+        /// Seed frequency in Hz.
         #[arg(long, default_value_t = 432.0)]
         seed: f64,
     },
+    /// Render mandala output in text or JSON fallback modes.
     Mandala {
+        /// Output format.
         #[arg(long, value_enum, default_value_t = OutputFormat::Text)]
         format: OutputFormat,
+        /// Optional output path for JSON export.
         #[arg(long)]
         output: Option<PathBuf>,
     },
+    /// Run a deterministic 10 Hz PrimeBeat pulse simulation.
     Pulse {
+        /// Number of pulse cycles.
         #[arg(long, default_value_t = 10)]
         cycles: u32,
     },
+    /// Compute continuity diagnostics from local session state.
     Continuity,
+    /// Show a concise system snapshot.
     Status,
+    /// Show OverStrings build and version information.
     Version,
 }
 
@@ -59,6 +79,7 @@ fn main() -> anyhow::Result<()> {
             let session = Session::new(profile, seed, "text");
             let path = save_session(&cli.state_dir, &session)?;
             let engine = ResonanceEngine::new(session);
+            println!("command: play");
             println!("session: {}", engine.session.id);
             println!("profile: {}", engine.session.profile);
             println!("seed_hz: {:.3}", engine.session.seed_frequency_hz);
@@ -68,7 +89,8 @@ fn main() -> anyhow::Result<()> {
         Commands::Tune { seed } => {
             let session = Session::new("tuning", seed, "text");
             let engine = ResonanceEngine::new(session);
-            println!("tuning profile: {}", engine.tuning.name);
+            println!("command: tune");
+            println!("tuning_profile: {}", engine.tuning.name);
             for (idx, hz) in engine.tuning.bands_hz.iter().enumerate() {
                 println!("band_{idx}: {:.3} Hz", hz);
             }
@@ -78,6 +100,7 @@ fn main() -> anyhow::Result<()> {
             let engine = ResonanceEngine::new(session);
             let pulse = engine.pulse(10);
             let frame = engine.mandala_frame(pulse.measured_hz);
+            println!("command: mandala");
             match format {
                 OutputFormat::Text => println!("{}", frame.to_text()),
                 OutputFormat::Json => {
@@ -96,6 +119,7 @@ fn main() -> anyhow::Result<()> {
             let session = load_or_default(&cli.state_dir)?;
             let engine = ResonanceEngine::new(session);
             let pulse = engine.pulse(cycles);
+            println!("command: pulse");
             println!("target_hz: {:.3}", pulse.target_hz);
             println!("measured_hz: {:.3}", pulse.measured_hz);
             println!("drift_hz: {:.3}", pulse.drift_hz);
@@ -114,6 +138,7 @@ fn main() -> anyhow::Result<()> {
                 cli.state_dir.join("session.json").exists(),
                 now_unix,
             );
+            println!("command: continuity");
             println!("session_age_seconds: {}", metrics.session_age_seconds);
             println!("pulse_consistency: {:.3}", metrics.pulse_consistency);
             println!("artifact_integrity: {:.3}", metrics.artifact_integrity);
@@ -125,6 +150,7 @@ fn main() -> anyhow::Result<()> {
             let engine = ResonanceEngine::new(session);
             let t = trellis::status();
             let s = siglstudio::status();
+            println!("command: status");
             println!("profile: {}", engine.session.profile);
             println!("seed_hz: {:.3}", engine.session.seed_frequency_hz);
             println!("shield_local_only: {}", engine.session.shield.local_only);
@@ -133,6 +159,7 @@ fn main() -> anyhow::Result<()> {
             println!("integration: {}", engine.integration_snapshot());
         }
         Commands::Version => {
+            println!("command: version");
             println!("overstrings {}", env!("CARGO_PKG_VERSION"));
             println!("build: seed-local-first");
         }
