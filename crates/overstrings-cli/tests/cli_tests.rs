@@ -27,3 +27,12 @@ fn mandala_text_runs() {
         .success()
         .stdout(contains("Mandala Frame"));
 }
+
+#[test]
+fn bridge_demo_runs() {
+    let mut cmd = Command::cargo_bin("overstrings").expect("bin");
+    cmd.args(["bridge-demo", "--scenario", "all"])
+        .assert()
+        .success()
+        .stdout(contains("safe_runtime_state"));
+}

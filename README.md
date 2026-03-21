@@ -1,58 +1,63 @@
-# OverStrings v0.1.0-alpha
+# OverStrings v0.1.0 — Software Bridge v1
 
-OverStrings is the software soul of the instrument: a local-first, inspectable control surface and resonance engine foundation for the Parallax ecosystem.
+OverStrings is currently the **software-first resonance body** in the Parallax stack. In this phase it truthfully provides a local, mock-first resonance bridge that can accept safe runtime events, map them to preset families, emit software responses, and publish operator-safe runtime status.
 
-## v0.1.0-alpha scope
+## What is live now
 
-### Real now
-- Runnable Rust workspace with a working `overstrings` CLI.
-- Deterministic tuning, pulse, mandala fallback rendering, and continuity diagnostics.
-- Local session state and exports in `.overstrings/`.
-- Honest Trellis/SIGLStudio status/export modules.
+- Preset family registry for:
+  - `anchor_warm`
+  - `shield_shell`
+  - `primebeat_pulse`
+  - `spiral_invoke`
+  - `oracle_glow`
+  - `recovery_baseline`
+- Safe payload contract for PhiVeil-triggered events.
+- Deterministic event-to-family mapping with bounded fallback/degraded behavior.
+- Software response engine with working `mock` transport.
+- Safe runtime state model for future EnterTheField-Hub consumption.
+- CLI demo path for payload intake, resonance triggers, and runtime state output.
 
-### Intentionally deferred
-- Live hardware control.
-- Real-time distributed networking.
-- Trellis live runtime bridge.
-- SIGLStudio live session bridge.
+## Honest scope boundaries
+
+### Implemented
+- `mock` transport is operational.
+- `serial`, `osc`, `midi` transports are scaffolded and explicitly `not_implemented_yet`.
+- No cloud dependency required.
+
+### Not implemented yet
+- Full physical instrument/hardware transport runtime.
+- Raw substrate/private harmonic internals exposure.
+- Full PhiVeil or EnterTheField-Hub runtime integration (only readiness interfaces/docs provided).
+- Advanced DSP/performance engine.
 
 ## Build and quickstart
 
 ```bash
 cargo build
 cargo run -p overstrings-cli -- --help
-cargo run -p overstrings-cli -- play --profile vineyard --seed 432.0
 ```
 
-State is stored in `.overstrings/` by default, or choose a custom path with `--state-dir`.
-
-## Command reference
-
-- `overstrings play` — start a local session and persist state.
-- `overstrings tune` — compute golden-ratio tuning bands.
-- `overstrings mandala` — render textual fallback or JSON export.
-- `overstrings pulse` — run deterministic 10 Hz pulse simulation.
-- `overstrings continuity` — compute continuity diagnostics from local state.
-- `overstrings status` — print concise operational snapshot.
-- `overstrings version` — print version/build info.
-
-## Evaluator demo commands
+## Software bridge demo commands
 
 ```bash
-cargo run -p overstrings-cli -- play --profile vineyard --seed 432.0
-cargo run -p overstrings-cli -- tune --seed 432.0
-cargo run -p overstrings-cli -- pulse --cycles 12
-cargo run -p overstrings-cli -- mandala --format text
-cargo run -p overstrings-cli -- mandala --format json --output .overstrings/mandala.json
-cargo run -p overstrings-cli -- continuity
-cargo run -p overstrings-cli -- status
-cargo run -p overstrings-cli -- version
+# Run all bridge families (anchor, primebeat, shield, spiral, oracle, recovery)
+cargo run -p overstrings-cli -- bridge-demo --scenario all
+
+# Run individual demos
+cargo run -p overstrings-cli -- bridge-demo --scenario anchor
+cargo run -p overstrings-cli -- bridge-demo --scenario spiral
+cargo run -p overstrings-cli -- bridge-demo --scenario degraded
+
+# Process a safe payload directly
+cargo run -p overstrings-cli -- bridge-event --transport mock --payload '{"event_id":"evt_001","gate":"gate_71_spiral","preset_family_hint":"spiral_invoke","intensity_class":"medium","transport_class":"mock","degraded_used":false,"fallback_state":"none","oracle_enabled":true,"runtime_mode":"oracle"}'
+
+# Print safe bridge runtime state
+cargo run -p overstrings-cli -- bridge-state --transport mock
 ```
 
-## Integration status in this alpha
+## Core docs
 
-- **Trellis**: discovery/install-hook intent reporting only.
-- **SIGLStudio**: structured export artifact generation only.
-- No hidden network daemon and no fake live bridge.
-
-See `docs/` for architecture, CLI behavior, integration posture, tuning formulas, and continuity metrics.
+- `docs/SOFTWARE_BRIDGE_V1.md` — software bridge architecture and event flow.
+- `docs/PAYLOAD_CONTRACT.md` — safe event payload schema and validation.
+- `docs/PRESET_REGISTRY.md` — public preset family registry.
+- Existing docs in `docs/` still describe seed engine, continuity, and integration posture.
