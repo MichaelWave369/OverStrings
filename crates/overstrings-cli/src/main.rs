@@ -1,6 +1,8 @@
 use anyhow::Context;
 use clap::{Parser, Subcommand, ValueEnum};
+use overstrings_core::bridge::SoftwareBridge;
 use overstrings_core::integration::{siglstudio, trellis};
+use overstrings_core::payloads::RuntimeEventPayload;
 use overstrings_core::state::session::{load_session, save_session, Session};
 use overstrings_core::ResonanceEngine;
 use std::fs;
@@ -60,6 +62,23 @@ enum Commands {
     Continuity,
     /// Show a concise system snapshot.
     Status,
+    /// Demo the OverStrings software bridge with safe mock payloads.
+    BridgeDemo {
+        #[arg(long, value_enum, default_value_t = BridgeScenario::All)]
+        scenario: BridgeScenario,
+    },
+    /// Process a safe JSON payload through the software bridge.
+    BridgeEvent {
+        #[arg(long)]
+        payload: String,
+        #[arg(long, default_value = "mock")]
+        transport: String,
+    },
+    /// Show safe runtime bridge state.
+    BridgeState {
+        #[arg(long, default_value = "mock")]
+        transport: String,
+    },
     /// Show OverStrings build and version information.
     Version,
 }
@@ -68,6 +87,14 @@ enum Commands {
 enum OutputFormat {
     Text,
     Json,
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, ValueEnum)]
+enum BridgeScenario {
+    All,
+    Anchor,
+    Spiral,
+    Degraded,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -158,6 +185,25 @@ fn main() -> anyhow::Result<()> {
             println!("siglstudio_export_ready: {}", s.export_ready);
             println!("integration: {}", engine.integration_snapshot());
         }
+        Commands::BridgeDemo { scenario } => {
+            run_bridge_demo(scenario)?;
+        }
+        Commands::BridgeEvent { payload, transport } => {
+            let mut bridge = SoftwareBridge::with_transport_class(&transport);
+            let payload = RuntimeEventPayload::from_json(&payload)?;
+            let result = bridge.process_event(payload)?;
+            println!("command: bridge-event");
+            println!("family: {}", result.family);
+            println!("degraded: {}", result.degraded);
+            println!("fallback_used: {}", result.fallback_used);
+            println!("pattern: {}", result.emitted_pattern);
+            println!("available: {}", result.available);
+        }
+        Commands::BridgeState { transport } => {
+            let bridge = SoftwareBridge::with_transport_class(&transport);
+            println!("command: bridge-state");
+            println!("{}", serde_json::to_string_pretty(bridge.runtime_state())?);
+        }
         Commands::Version => {
             println!("command: version");
             println!("overstrings {}", env!("CARGO_PKG_VERSION"));
@@ -166,6 +212,132 @@ fn main() -> anyhow::Result<()> {
     }
 
     Ok(())
+}
+
+fn run_bridge_demo(scenario: BridgeScenario) -> anyhow::Result<()> {
+    let mut bridge = SoftwareBridge::with_transport_class("mock");
+    let payloads = match scenario {
+        BridgeScenario::All => vec![
+            sample_payload("evt_anchor", "gate_65_anchor", "anchor_warm", "low", false),
+            sample_payload(
+                "evt_prime",
+                "gate_68_prime",
+                "primebeat_pulse",
+                "high",
+                false,
+            ),
+            sample_payload(
+                "evt_shield",
+                "gate_69_shield",
+                "shield_shell",
+                "medium",
+                false,
+            ),
+            sample_payload(
+                "evt_spiral",
+                "gate_71_spiral",
+                "spiral_invoke",
+                "medium",
+                false,
+            ),
+            RuntimeEventPayload {
+                event_id: "evt_oracle".into(),
+                gate: "gate_71_spiral".into(),
+                preset_family_hint: "oracle_glow".into(),
+                intensity_class: "low".into(),
+                transport_class: "mock".into(),
+                degraded_used: false,
+                fallback_state: "none".into(),
+                oracle_enabled: Some(true),
+                runtime_mode: Some("oracle_follow_on".into()),
+                device_profile: Some("local_demo".into()),
+                session_id: Some("demo_session".into()),
+            },
+            RuntimeEventPayload {
+                event_id: "evt_recovery".into(),
+                gate: "gate_reset".into(),
+                preset_family_hint: "recovery_baseline".into(),
+                intensity_class: "low".into(),
+                transport_class: "mock".into(),
+                degraded_used: true,
+                fallback_state: "degraded".into(),
+                oracle_enabled: Some(false),
+                runtime_mode: Some("safe".into()),
+                device_profile: None,
+                session_id: None,
+            },
+        ],
+        BridgeScenario::Anchor => {
+            vec![sample_payload(
+                "evt_anchor",
+                "gate_65_anchor",
+                "anchor_warm",
+                "low",
+                false,
+            )]
+        }
+        BridgeScenario::Spiral => vec![sample_payload(
+            "evt_spiral",
+            "gate_71_spiral",
+            "spiral_invoke",
+            "medium",
+            false,
+        )],
+        BridgeScenario::Degraded => vec![RuntimeEventPayload {
+            event_id: "evt_recovery".into(),
+            gate: "gate_reset".into(),
+            preset_family_hint: "recovery_baseline".into(),
+            intensity_class: "low".into(),
+            transport_class: "mock".into(),
+            degraded_used: true,
+            fallback_state: "degraded".into(),
+            oracle_enabled: Some(false),
+            runtime_mode: Some("safe".into()),
+            device_profile: None,
+            session_id: None,
+        }],
+    };
+
+    println!("command: bridge-demo");
+    for payload in payloads {
+        let result = bridge.process_event(payload)?;
+        println!(
+            "event={} family={} degraded={} pattern={}",
+            result.event_id, result.family, result.degraded, result.emitted_pattern
+        );
+    }
+    println!(
+        "safe_runtime_state={} ",
+        serde_json::to_string_pretty(bridge.runtime_state())?
+    );
+
+    Ok(())
+}
+
+fn sample_payload(
+    event_id: &str,
+    gate: &str,
+    hint: &str,
+    intensity: &str,
+    degraded: bool,
+) -> RuntimeEventPayload {
+    RuntimeEventPayload {
+        event_id: event_id.into(),
+        gate: gate.into(),
+        preset_family_hint: hint.into(),
+        intensity_class: intensity.into(),
+        transport_class: "mock".into(),
+        degraded_used: degraded,
+        fallback_state: if degraded {
+            "degraded".into()
+        } else {
+            "none".into()
+        },
+        oracle_enabled: Some(false),
+        runtime_mode: Some("normal".into()),
+        device_profile: Some("local_demo".into()),
+        session_id: Some("demo_session".into()),
+    }
 }
 
 fn load_or_default(state_dir: &std::path::Path) -> anyhow::Result<Session> {
