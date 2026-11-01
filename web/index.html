@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d1a">
+<title>OverStrings · Living Gesture Bridge</title>
+<link rel="stylesheet" href="./styles.css">
+<script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">ENTER THE FIELD / Φ369 LABS</p>
+    <h1>OVER<span>STRINGS</span></h1>
+    <p class="muted">Living Gesture Bridge · Quest 3 WebXR · Experimental v1</p>
+  </header>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">LOCAL FIRST · NO TELEMETRY</p>
+      <h2>Your hands become the instrument.</h2>
+      <p>Open in Quest Browser with hand tracking enabled, then start VR. The immersive viewer draws actual tracked hand joints, not estimated or synthetic poses.</p>
+      <div class="actions">
+        <button class="primary" id="start" type="button">Enter hand-tracking VR</button>
+        <button id="stop" type="button" disabled>End VR session</button>
+      </div>
+      <p id="mode" class="status" role="status" aria-live="polite">Checking support…</p>
+    </div>
+    <div class="orb" aria-hidden="true"><div class="orb-core">Φ</div><div class="ring one"></div><div class="ring two"></div></div>
+  </section>
+  <section class="cards" aria-label="Hand tracking readout">
+    <article><p class="eyebrow">TRACKING</p><h3>Left hand</h3><p id="left-status">inactive</p></article>
+    <article><p class="eyebrow">TRACKING</p><h3>Right hand</h3><p id="right-status">inactive</p></article>
+    <article><p class="eyebrow">RESONANCE</p><h3>Mapped family</h3><p id="family">none</p></article>
+  </section>
+  <section class="cards lower">
+    <article>
+      <p class="eyebrow">DESKTOP VALIDATION</p><h3>Synthetic gesture events</h3>
+      <p>These buttons test the event bridge only, not actual headset tracking.</p>
+      <div class="actions compact">
+        <button type="button" data-sim="open">Open</button>
+        <button type="button" data-sim="pinch">Pinch</button>
+        <button type="button" data-sim="grab">Grab</button>
+        <button type="button" data-sim="point">Point</button>
+      </div>
+      <p class="status" id="bridge">No mock events yet</p>
+      <h3>Local event journal</h3><ol id="events" aria-live="polite"></ol>
+    </article>
+    <article>
+      <p class="eyebrow">RUST BRIDGE COMPATIBILITY</p><h3>Safe mock payload</h3>
+      <p>Matches the existing Rust payload shape. The browser does not run a Rust backend.</p>
+      <pre id="payload">No events yet</pre>
+    </article>
+  </section>
+  <footer>Privacy: hand positions stay in browser memory. No raw hand upload, video API, accounts or analytics. <a href="https://github.com/MichaelWave369/OverStrings">Source code · MIT</a></footer>
+</main>
+</body>
+</html>
