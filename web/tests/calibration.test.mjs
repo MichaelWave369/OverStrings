@@ -5,7 +5,7 @@ import {GestureTracker,recognizeGesture} from "../gesture.mjs";
 
 function hand({tipX=-0.03}={}) {
   const fingers=["index-finger","middle-finger","ring-finger","pinky-finger"];
-  const joints={wrist:{x:0,y:0,z:0},"thumb-tip":{x:tipX+0.025,y:.11,z:0}};
+  const joints={wrist:{x:0,y:0,z:0},"thumb-tip":{x:tipX+0.01,y:.11,z:0}};
   for(const [i,f] of fingers.entries()) {
     const x=-.03+i*.02;
     joints[f+"-metacarpal"]={x,y:.02,z:0};
