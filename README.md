@@ -1,63 +1,34 @@
-# OverStrings v0.1.0 — Software Bridge v1
+# OverStrings — Living Gesture Bridge v1 candidate
 
-OverStrings is currently the **software-first resonance body** in the Parallax stack. In this phase it truthfully provides a local, mock-first resonance bridge that can accept safe runtime events, map them to preset families, emit software responses, and publish operator-safe runtime status.
+**Enter the Field / Φ369 Labs · MIT · local-first · browser-ready**
 
-## What is live now
+OverStrings combines its existing Rust resonance event bridge with a portable, dependency-free WebXR hand gesture research playground.
 
-- Preset family registry for:
-  - `anchor_warm`
-  - `shield_shell`
-  - `primebeat_pulse`
-  - `spiral_invoke`
-  - `oracle_glow`
-  - `recovery_baseline`
-- Safe payload contract for PhiVeil-triggered events.
-- Deterministic event-to-family mapping with bounded fallback/degraded behavior.
-- Software response engine with working `mock` transport.
-- Safe runtime state model for future EnterTheField-Hub consumption.
-- CLI demo path for payload intake, resonance triggers, and runtime state output.
+**Experimental Quest 3 demo:** https://michaelwave369.github.io/OverStrings/ (after PR merge, Pages workflow success, and GitHub Pages configured for GitHub Actions).
 
-## Honest scope boundaries
+## Browser gesture slice
+- Immersive stereo WebXR view of up to 25 actual hand joints per hand, if exposed by the runtime.
+- Heuristic open, pinch, grab and point labels. Palm-relative thresholds, dwell, loss recovery.
+- Safe mock payload matching the existing Rust RuntimeEventPayload shape.
+- Synthetic desktop gesture buttons, explicitly **not physical tracking**.
+- No cloud dependency, camera capture API, external SDK or telemetry.
 
-### Implemented
-- `mock` transport is operational.
-- `serial`, `osc`, `midi` transports are scaffolded and explicitly `not_implemented_yet`.
-- No cloud dependency required.
+**Not yet verified:** physical Quest 3 comfort, actual tracking accuracy, hand-controller coexistence, game integrations, native tracking enhancement, Wi-Fi sensing or a browser-to-Rust transport. The browser demo presents JSON; it does not execute Rust or real OSC/MIDI/serial.
 
-### Not implemented yet
-- Full physical instrument/hardware transport runtime.
-- Raw substrate/private harmonic internals exposure.
-- Full PhiVeil or EnterTheField-Hub runtime integration (only readiness interfaces/docs provided).
-- Advanced DSP/performance engine.
+Read [Gesture Bridge v1 specification and Quest checklist](docs/GESTURE_BRIDGE_V1.md).
 
-## Build and quickstart
+## Existing Rust software bridge (preserved)
+- Preset families: anchor_warm, shield_shell, primebeat_pulse, spiral_invoke, oracle_glow, recovery_baseline.
+- Safe PhiVeil-style payloads and deterministic mapping.
+- Local/mock transport works. Serial, OSC and MIDI are still scaffolds and report not_implemented_yet.
+- CLI demo: cargo run -p overstrings-cli -- bridge-demo --scenario all
+- Browser tests: node --test web/tests/*.test.mjs
 
-```bash
-cargo build
-cargo run -p overstrings-cli -- --help
-```
+## Documentation
+- [Software Bridge v1](docs/SOFTWARE_BRIDGE_V1.md)
+- [Payload contract](docs/PAYLOAD_CONTRACT.md)
+- [Preset registry](docs/PRESET_REGISTRY.md)
+- [Gesture Bridge v1](docs/GESTURE_BRIDGE_V1.md)
 
-## Software bridge demo commands
-
-```bash
-# Run all bridge families (anchor, primebeat, shield, spiral, oracle, recovery)
-cargo run -p overstrings-cli -- bridge-demo --scenario all
-
-# Run individual demos
-cargo run -p overstrings-cli -- bridge-demo --scenario anchor
-cargo run -p overstrings-cli -- bridge-demo --scenario spiral
-cargo run -p overstrings-cli -- bridge-demo --scenario degraded
-
-# Process a safe payload directly
-cargo run -p overstrings-cli -- bridge-event --transport mock --payload '{"event_id":"evt_001","gate":"gate_71_spiral","preset_family_hint":"spiral_invoke","intensity_class":"medium","transport_class":"mock","degraded_used":false,"fallback_state":"none","oracle_enabled":true,"runtime_mode":"oracle"}'
-
-# Print safe bridge runtime state
-cargo run -p overstrings-cli -- bridge-state --transport mock
-```
-
-## Core docs
-
-- `docs/SOFTWARE_BRIDGE_V1.md` — software bridge architecture and event flow.
-- `docs/PAYLOAD_CONTRACT.md` — safe event payload schema and validation.
-- `docs/PRESET_REGISTRY.md` — public preset family registry.
-- Existing docs in `docs/` still describe seed engine, continuity, and integration posture.
+## License
+New/mainline distribution: [MIT](LICENSE), subject to rights-holder review. Old AGPL-3.0-only commits remain available under their historical license. Third-party materials retain their respective terms.
