@@ -1,25 +1,14 @@
 # Changelog
 
-All notable changes to OverStrings are documented in this file.
+## Unreleased — Living Gesture Bridge v1 (2026-11-01)
+- MIT license for new/mainline source, preserving historic AGPL grant on older revisions.
+- Portable WebXR stereo Quest hand-joint playground with four gesture labels.
+- Dwell, tracking-loss/recovery guard, and versioned local gesture events.
+- Mock-compatible safe resonance payload mapping with no raw hand poses sent.
+- Browser tests, CI and optional Pages publication.
+- Existing Rust software bridge unchanged; no unproven hardware performance claims.
 
-## v0.1.0-alpha - 2026-03-20
-
-### Added
-- Rust workspace with `overstrings-core` and `overstrings-cli`.
-- Runnable `overstrings` CLI with commands: `play`, `tune`, `mandala`, `pulse`, `continuity`, `status`, `version`.
-- Deterministic local state persistence under `.overstrings/`.
-- Golden-ratio tuning profile generation and 10 Hz pulse simulation.
-- Mandala text/JSON fallback rendering and SIGLStudio export artifact model.
-- Continuity diagnostics and orthogonal shield local-only posture model.
-- Honest Trellis and SIGLStudio status modules (no fake live runtime bridge).
-- Initial documentation set and CI workflow.
-
-### Changed
-- Improved CLI help text and per-command output consistency using stable key/value lines.
-- Clarified README quickstart and evaluator demo commands.
-
-### Deferred (intentional)
-- Physical hardware control and hard device dependencies.
-- Distributed resonance networking.
-- Trellis live runtime integration.
-- SIGLStudio live bridge.
+## v0.1.0-alpha — 2026-03-20
+- Rust workspace, CLI, tuning and mandala components.
+- Deterministic local persistence and safe mock resonance bridge.
+- Initial docs and CI. Live physical transport and distributed connectors deferred.
