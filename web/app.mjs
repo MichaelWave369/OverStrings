@@ -1,7 +1,9 @@
 import {GestureTracker,toResonancePayload} from "./gesture.mjs";
 import {startHandXR} from "./xr-runtime.mjs";
+import {setupStudio} from "./studio.mjs";
 const el=id=>document.getElementById(id);
 const tracker=new GestureTracker();
+const studio=setupStudio(tracker);
 let xr=null, lastDisplay=0, sequence=0;
 function log(message) {
   const line=document.createElement("li");
@@ -21,6 +23,7 @@ function emit(evt) {
     " / "+evt.phase+(payload?" → "+payload.preset_family_hint:""));
 }
 function updateFrame(sources,time) {
+  studio.onFrame(sources,time);
   for(const hand of ["left","right"]) {
     for(const evt of tracker.update(hand,sources[hand],time))emit(evt);
   }
@@ -38,6 +41,7 @@ async function start() {
     xr=await startHandXR({
       onFrame:updateFrame,
       onEnd:()=>{
+        studio.onSessionEnd();
         xr=null;tracker.reset();el("start").disabled=false;
         el("stop").disabled=true;el("mode").textContent="Headset session ended";
         el("left-status").textContent="inactive";

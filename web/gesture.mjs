@@ -1,3 +1,4 @@
+import {defaultProfile,validateProfile} from "./calibration.mjs";
 /**
  * OverStrings Living Gesture Bridge v1. Dependency-free, portable input logic.
  * Heuristics are not physically calibrated confidence scores. MIT licensed.
@@ -22,7 +23,11 @@ export function distance(a,b) {
   if (!finite(a)||!finite(b)) return Infinity;
   return Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
 }
-export function recognizeGesture(joints) {
+export function recognizeGesture(joints, sensitivity={}) {
+  const pinchRatio = sensitivity?.pinchRatio ?? 0.35;
+  const extensionRatio = sensitivity?.extensionRatio ?? 1.17;
+  if (!Number.isFinite(pinchRatio) || pinchRatio < 0.2 || pinchRatio > 0.65 ||
+      !Number.isFinite(extensionRatio) || extensionRatio < 1.0 || extensionRatio > 1.4) return "unknown";
   if (!joints || !finite(joints.wrist) || !finite(joints["thumb-tip"])) return "unknown";
   const width=distance(joints["index-finger-metacarpal"],joints["pinky-finger-metacarpal"]);
   if (!Number.isFinite(width)||width<.015||width>.22) return "unknown";
@@ -30,9 +35,9 @@ export function recognizeGesture(joints) {
   for (const f of FINGERS) {
     const tip=joints[f+"-tip"], pip=joints[f+"-phalanx-proximal"];
     if (!finite(tip)||!finite(pip)) return "unknown";
-    extended.push(distance(joints.wrist,tip)>distance(joints.wrist,pip)*1.17);
+    extended.push(distance(joints.wrist,tip)>distance(joints.wrist,pip)*extensionRatio);
   }
-  if (distance(joints["thumb-tip"],joints["index-finger-tip"])<width*.35) return "pinch";
+  if (distance(joints["thumb-tip"],joints["index-finger-tip"])<width*pinchRatio) return "pinch";
   const count=extended.filter(Boolean).length;
   if (count>=3) return "open";
   if (extended[0]&&!extended[1]&&!extended[2]&&!extended[3]) return "point";
@@ -40,9 +45,15 @@ export function recognizeGesture(joints) {
   return "neutral";
 }
 export class GestureTracker {
-  constructor({dwellMs=95,lostMs=150}={}) {
-    this.dwellMs=dwellMs; this.lostMs=lostMs;
+  constructor({dwellMs=95,lostMs=150,profile=null}={}) {
     this.hands=new Map(); this.sequence=0;
+    this.setProfile(profile || {...defaultProfile(),dwellMs,lostMs});
+  }
+  setProfile(profile) {
+    this.profile=validateProfile(profile);
+    this.dwellMs=this.profile.dwellMs;
+    this.lostMs=this.profile.lostMs;
+    this.reset();
   }
   update(handedness,joints,timeMs,source="webxr") {
     if (!["left","right"].includes(handedness)||!Number.isFinite(timeMs)) return [];
@@ -54,7 +65,7 @@ export class GestureTracker {
       version:1,type:"overstrings.gesture",id:"osg-"+(++this.sequence),
       source,handedness,gesture,phase,timestamp_ms:Math.round(timeMs)
     });
-    const raw=recognizeGesture(joints);
+    const raw=recognizeGesture(joints,this.profile[handedness]);
     if (raw==="unknown") {
       if(s.lastSeen!==null && timeMs-s.lastSeen>=this.lostMs) {
         if(s.gesture!=="neutral") events.push(make(s.gesture,"lost"));
