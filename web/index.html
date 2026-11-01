@@ -52,6 +52,49 @@
       <pre id="payload">No events yet</pre>
     </article>
   </section>
+  <section class="cards lower studio-section" aria-label="Calibration and motion phrase capture">
+    <article>
+      <p class="eyebrow">RUNG 2 · GESTURE SENSITIVITY</p>
+      <h3>Independent hand calibration</h3>
+      <p>Adjust recognition thresholds for your left or right hand. This tunes gesture interpretation, not the Quest hardware sensor.</p>
+      <div class="settings">
+        <label for="cal-hand">Hand profile</label>
+        <select id="cal-hand"><option value="left">Left hand</option><option value="right">Right hand</option></select>
+        <label for="cal-pinch">Pinch tolerance <output id="cal-pinch-value" for="cal-pinch">0.35</output></label>
+        <input type="range" id="cal-pinch" min=".2" max=".65" step=".01" value=".35">
+        <label for="cal-extension">Finger extension threshold <output id="cal-extension-value" for="cal-extension">1.17</output></label>
+        <input type="range" id="cal-extension" min="1" max="1.4" step=".01" value="1.17">
+        <label for="cal-dwell">Gesture hold time <output id="cal-dwell-value" for="cal-dwell">95 ms</output></label>
+        <input type="range" id="cal-dwell" min="40" max="350" step="5" value="95">
+        <label for="cal-loss">Tracking loss timeout <output id="cal-loss-value" for="cal-loss">150 ms</output></label>
+        <input type="range" id="cal-loss" min="100" max="1000" step="10" value="150">
+      </div>
+      <div class="actions compact">
+        <button id="cal-save" type="button">Save settings locally</button>
+        <button id="cal-reset" type="button">Reset to defaults</button>
+      </div>
+      <p class="status" role="status" id="cal-status">Changes apply immediately; saving is optional.</p>
+    </article>
+    <article>
+      <p class="eyebrow">RUNG 2 · LIQUID / DIGITS LAB</p>
+      <h3>Record a motion phrase</h3>
+      <p>Arm before entering VR. Capture begins only when real hands are tracked. Up to 20 seconds at approximately 14 samples per second, held in memory until you choose to export.</p>
+      <label for="motion-label">Phrase name</label>
+      <input id="motion-label" type="text" maxlength="60" value="Liquid Sequence 01" autocomplete="off">
+      <div class="actions compact">
+        <button id="arm-motion" type="button">Arm next VR recording</button>
+        <button id="stop-motion" type="button" disabled>Stop capture</button>
+        <button id="synthetic-motion" type="button">Make synthetic demo</button>
+      </div>
+      <p class="status" role="status" aria-live="polite" id="motion-status">No motion captured.</p>
+      <canvas id="motion-preview" width="620" height="210" role="img" aria-label="Top-down projected wrist movement trails. Blue left, orange right."></canvas>
+      <p class="status">Preview shows wrist trajectories only. Exported JSON also contains palm-relative fingertip paths. These are movement measurements, so treat exported files as private.</p>
+      <div class="actions compact">
+        <button id="download-motion" type="button" disabled>Export motion JSON</button>
+        <button id="clear-motion" type="button" disabled>Clear recording</button>
+      </div>
+    </article>
+  </section>
   <footer>Privacy: hand positions stay in browser memory. No raw hand upload, video API, accounts or analytics. <a href="https://github.com/MichaelWave369/OverStrings">Source code · MIT</a></footer>
 </main>
 </body>

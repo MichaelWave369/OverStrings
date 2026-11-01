@@ -39,5 +39,8 @@ jobs:
           node --check web/gesture.mjs
           node --check web/xr-runtime.mjs
           node --check web/app.mjs
+          node --check web/studio.mjs
+          node --check web/calibration.mjs
+          node --check web/motion.mjs
       - name: Gesture bridge unit tests
         run: node --test web/tests/*.test.mjs

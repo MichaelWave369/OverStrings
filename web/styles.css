@@ -22,3 +22,11 @@ pre{background:#050d1e;color:#88eac9;border:1px solid #253e56;padding:15px;borde
 #events{padding-left:1.5em;max-height:220px;overflow:auto;color:#c1d8f0;font-size:.83rem}
 #events li{margin:6px 0;overflow-wrap:anywhere}footer{margin-top:28px;border-top:1px solid #2a425f;padding-top:21px;line-height:1.65;color:#98adc8;font-size:.85rem}
 a{color:#8bddff}@media(max-width:800px){main{padding-top:22px}.hero{grid-template-columns:1fr}.orb{display:none}.cards,.lower{grid-template-columns:1fr}}
+
+.studio-section{margin-top:18px}.settings{display:grid;gap:8px;margin-top:14px}
+.settings label{font-size:.86rem;color:#c5def1;font-weight:600;display:flex;justify-content:space-between;gap:10px}
+.settings output{color:#82e8c6;white-space:nowrap}
+.settings input[type=range]{width:100%;accent-color:#7ddaff;margin:2px 0 10px}
+.studio-section select,.studio-section input[type=text]{background:#070f21;border:1px solid #50738f;border-radius:9px;color:#ebf5ff;padding:10px;font:inherit;width:100%;max-width:100%}
+.studio-section select:focus-visible,.studio-section input[type=text]:focus-visible{outline:3px solid #77e2c8;outline-offset:2px}
+.studio-section canvas{width:100%;height:auto;border-radius:11px;border:1px solid #284a68;margin-top:8px}
