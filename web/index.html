@@ -13,7 +13,7 @@
   <header>
     <p class="eyebrow">ENTER THE FIELD / Φ369 LABS</p>
     <h1>OVER<span>STRINGS</span></h1>
-    <p class="muted">Living Gesture Bridge · Quest 3 WebXR · Experimental v1</p>
+    <p class="muted">Living Gesture Bridge · Quest 3 WebXR · Experimental Rung 3</p>
   </header>
   <section class="hero">
     <div>
@@ -84,7 +84,9 @@
       <div class="actions compact">
         <button id="arm-motion" type="button">Arm next VR recording</button>
         <button id="stop-motion" type="button" disabled>Stop capture</button>
-        <button id="synthetic-motion" type="button">Make synthetic demo</button>
+        <button id="synthetic-motion" type="button">Synthetic reference</button>
+        <button id="synthetic-motion-similar" type="button">Synthetic similar take</button>
+        <button id="synthetic-motion-reverse" type="button">Synthetic reversed take</button>
       </div>
       <p class="status" role="status" aria-live="polite" id="motion-status">No motion captured.</p>
       <canvas id="motion-preview" width="620" height="210" role="img" aria-label="Top-down projected wrist movement trails. Blue left, orange right."></canvas>
@@ -93,6 +95,30 @@
         <button id="download-motion" type="button" disabled>Export motion JSON</button>
         <button id="clear-motion" type="button" disabled>Clear recording</button>
       </div>
+    </article>
+  </section>
+  <section class="cards studio-section phrase-section" aria-label="Learn and compare a custom movement">
+    <article>
+      <p class="eyebrow">RUNG 3 · LIQUID LANGUAGE LAB</p>
+      <h3>Teach a movement phrase</h3>
+      <p>Use the completed recording as a reference, or import an exported OverStrings motion JSON file. References stay in browser memory and are never uploaded or saved automatically.</p>
+      <div class="actions compact">
+        <button type="button" id="learn-phrase" disabled>Use recording as reference</button>
+        <button type="button" id="clear-phrase" disabled>Forget reference</button>
+      </div>
+      <label class="file-label" for="phrase-file">Import exported motion JSON (max 250 KB)</label>
+      <input type="file" id="phrase-file" accept=".json,application/json">
+      <p class="status" id="phrase-template">No phrase template loaded.</p>
+    </article>
+    <article>
+      <p class="eyebrow">RUNG 3 · MANUAL MATCHING</p>
+      <h3>Perform it again</h3>
+      <p>Clear the previous recording, capture another attempt, then compare. The matcher measures trajectory differences; it cannot automatically control games or cast spells.</p>
+      <div class="actions compact">
+        <button type="button" id="compare-phrase" class="primary" disabled>Compare with reference</button>
+      </div>
+      <p id="phrase-result" role="status" aria-live="polite" class="phrase-result">No comparison yet. Lower distance means closer movement, not a confidence percentage.</p>
+      <p class="status">Synthetic examples are development demonstrations only. Quest 3 recognition thresholds remain unverified.</p>
     </article>
   </section>
   <footer>Privacy: hand positions stay in browser memory. No raw hand upload, video API, accounts or analytics. <a href="https://github.com/MichaelWave369/OverStrings">Source code · MIT</a></footer>
