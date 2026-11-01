@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub const GOLDEN_RATIO: f64 = 1.618_033_988_75;
+pub const GOLDEN_RATIO: f64 = std::f64::consts::GOLDEN_RATIO;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct TuningProfile {
