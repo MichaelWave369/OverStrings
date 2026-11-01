@@ -26,3 +26,18 @@ jobs:
 
       - name: Test
         run: cargo test --workspace
+
+  gesture-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check web/gesture.mjs
+          node --check web/xr-runtime.mjs
+          node --check web/app.mjs
+      - name: Gesture bridge unit tests
+        run: node --test web/tests/*.test.mjs
