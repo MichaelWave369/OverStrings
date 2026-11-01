@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — Game Action Bridge (Rung 4 candidate, 2026-11-01)
+- Add explicit one-shot advisory action-intent gate with cooldown, fail-closed comparison checks and four allowlisted destinations.
+- Add local browser practice sandbox that requires manual arming, a reference phrase and a second comparison.
+- Keep synthetic test preview behind separate consent. No real game integration, persistent permission or unattended gesture recognition.
+- Add unit tests, browser syntax checks and implementation/field-test documentation.
+
+
 ## Unreleased — Liquid Language Lab (Rung 3 candidate, 2026-11-01)
 - Add strict bounded parsing and deterministic time-warped comparison of independent OverStrings motion JSON recordings.
 - Add manual teach/import/compare/forget controls with no persistent movement templates or automatic game actions.

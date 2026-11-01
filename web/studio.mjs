@@ -68,7 +68,7 @@ export function setupStudio(tracker) {
   let profile=loadCalibration();
   tracker.setProfile(profile);
   const recorder=new MotionRecorder();
-  let previousState="idle",lastPaintTime=-Infinity,template=null,templateSignature=null;
+  let previousState="idle",lastPaintTime=-Infinity,template=null,templateSignature=null,templateRevision=0;
   function syncCalibration() {
     const hand=get("cal-hand").value;
     get("cal-pinch").value=String(profile[hand].pinchRatio);
@@ -192,6 +192,7 @@ export function setupStudio(tracker) {
   get("learn-phrase").addEventListener("click",()=>{
     try {
       template=parseMotionText(recorder.exportJSON(get("motion-label").value));
+      templateRevision++;
       templateSignature=JSON.stringify(template.frames);
       get("phrase-result").textContent="Reference captured in memory. Clear this recording and make another attempt before comparing.";
       syncPhrases();
@@ -205,7 +206,7 @@ export function setupStudio(tracker) {
     try {
       if(file.size>250000)throw new RangeError("File exceeds 250 KB limit");
       const imported=parseMotionText(await file.text());
-      template=imported;templateSignature=JSON.stringify(imported.frames);
+      template=imported;templateRevision++;templateSignature=JSON.stringify(imported.frames);
       get("phrase-result").textContent="Imported "+imported.source+" reference into memory. No upload or persistent storage.";
     } catch(e) {
       get("phrase-result").textContent="Import rejected: "+String(e.message||e);
@@ -214,7 +215,7 @@ export function setupStudio(tracker) {
     }
   });
   get("clear-phrase").addEventListener("click",()=>{
-    template=null;templateSignature=null;
+    template=null;templateSignature=null;templateRevision++;
     get("phrase-result").textContent="Reference discarded from memory.";
     syncPhrases();
   });
@@ -242,6 +243,9 @@ export function setupStudio(tracker) {
   });
   syncRecorder(true);
   return {
+    getTemplateMeta(){
+      return template ? {label:template.label,source:template.source,revision:templateRevision} : null;
+    },
     onFrame(sources,time) {
       if(recorder.source==="webxr" && ["armed","recording"].includes(recorder.state)) {
         recorder.ingest(sources,time);
