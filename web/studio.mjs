@@ -6,6 +6,7 @@
  */
 import {defaultProfile,validateProfile} from "./calibration.mjs";
 import {MotionRecorder} from "./motion.mjs";
+import {parseMotionText,compareMotions} from "./phrases.mjs";
 const get = id => document.getElementById(id);
 const SETTINGS_KEY = "overstrings.gesture.profile.v1";
 function loadCalibration() {
@@ -67,7 +68,7 @@ export function setupStudio(tracker) {
   let profile=loadCalibration();
   tracker.setProfile(profile);
   const recorder=new MotionRecorder();
-  let previousState="idle",lastPaintTime=-Infinity;
+  let previousState="idle",lastPaintTime=-Infinity,template=null,templateSignature=null;
   function syncCalibration() {
     const hand=get("cal-hand").value;
     get("cal-pinch").value=String(profile[hand].pinchRatio);
@@ -118,10 +119,21 @@ export function setupStudio(tracker) {
   });
   syncCalibration();
 
+  function syncPhrases() {
+    const complete=recorder.state==="complete";
+    get("learn-phrase").disabled=!complete;
+    get("compare-phrase").disabled=!complete||!template;
+    get("clear-phrase").disabled=!template;
+    get("phrase-template").textContent=template ?
+      template.label+" ("+template.source+", "+template.frames.length+" frames)" :
+      "No phrase template loaded. Use a completed recording or import JSON.";
+  }
   function syncRecorder(forcePaint=false) {
     const state=recorder.state;
     get("arm-motion").disabled=state!=="idle";
     get("synthetic-motion").disabled=state!=="idle";
+    get("synthetic-motion-similar").disabled=state!=="idle";
+    get("synthetic-motion-reverse").disabled=state!=="idle";
     get("stop-motion").disabled=state!=="armed"&&state!=="recording";
     get("download-motion").disabled=state!=="complete";
     get("clear-motion").disabled=state==="idle";
@@ -134,6 +146,7 @@ export function setupStudio(tracker) {
     get("motion-status").textContent=message;
     if(forcePaint||state!==previousState)paintPreview(recorder);
     previousState=state;
+    syncPhrases();
   }
   get("arm-motion").addEventListener("click",()=>{
     recorder.arm("webxr");syncRecorder(true);
@@ -144,18 +157,22 @@ export function setupStudio(tracker) {
   get("clear-motion").addEventListener("click",()=>{
     recorder.clear();syncRecorder(true);
   });
-  get("synthetic-motion").addEventListener("click",()=>{
+  function makeSynthetic(variant) {
     recorder.arm("synthetic");
     for(let i=0;i<40;i++) {
       const t=i/39;
+      const phase=(variant==="reverse"?-1:1)*t*Math.PI*2;
+      const wobble=variant==="similar"?.004*Math.sin(t*6*Math.PI):0;
       recorder.ingest({
-        left:syntheticHand(-.16+Math.sin(t*Math.PI*2)*.14,.10+Math.cos(t*Math.PI*2)*.08,1),
-        right:syntheticHand(.16+Math.sin(t*Math.PI*2+1)*.1,.12+Math.cos(t*Math.PI*2+1)*.09,-1)
+        left:syntheticHand(-.16+Math.sin(phase)*.14+wobble,.10+Math.cos(phase)*.08,1),
+        right:syntheticHand(.16+Math.sin(phase+1)*.1+wobble,.12+Math.cos(phase+1)*.09,-1)
       },i*70);
     }
-    recorder.stop();
-    syncRecorder(true);
-  });
+    recorder.stop();syncRecorder(true);
+  }
+  get("synthetic-motion").addEventListener("click",()=>makeSynthetic("original"));
+  get("synthetic-motion-similar").addEventListener("click",()=>makeSynthetic("similar"));
+  get("synthetic-motion-reverse").addEventListener("click",()=>makeSynthetic("reverse"));
   get("download-motion").addEventListener("click",()=>{
     try {
       const data=recorder.exportJSON(get("motion-label").value);
@@ -170,6 +187,57 @@ export function setupStudio(tracker) {
       get("motion-status").textContent="Export initiated locally. Recording remains in memory until cleared.";
     } catch(e) {
       get("motion-status").textContent=String(e.message||e);
+    }
+  });
+  get("learn-phrase").addEventListener("click",()=>{
+    try {
+      template=parseMotionText(recorder.exportJSON(get("motion-label").value));
+      templateSignature=JSON.stringify(template.frames);
+      get("phrase-result").textContent="Reference captured in memory. Clear this recording and make another attempt before comparing.";
+      syncPhrases();
+    } catch(e) {
+      get("phrase-result").textContent="Reference not set: "+String(e.message||e);
+    }
+  });
+  get("phrase-file").addEventListener("change",async(event)=>{
+    const file=event.target.files?.[0];
+    if(!file)return;
+    try {
+      if(file.size>250000)throw new RangeError("File exceeds 250 KB limit");
+      const imported=parseMotionText(await file.text());
+      template=imported;templateSignature=JSON.stringify(imported.frames);
+      get("phrase-result").textContent="Imported "+imported.source+" reference into memory. No upload or persistent storage.";
+    } catch(e) {
+      get("phrase-result").textContent="Import rejected: "+String(e.message||e);
+    } finally {
+      event.target.value="";syncPhrases();
+    }
+  });
+  get("clear-phrase").addEventListener("click",()=>{
+    template=null;templateSignature=null;
+    get("phrase-result").textContent="Reference discarded from memory.";
+    syncPhrases();
+  });
+  get("compare-phrase").addEventListener("click",()=>{
+    if(!template||recorder.state!=="complete")return;
+    try {
+      const candidate=parseMotionText(recorder.exportJSON(get("motion-label").value));
+      if(JSON.stringify(candidate.frames)===templateSignature) {
+        get("phrase-result").textContent="Same data as reference. Make a second independent recording; self-comparison proves nothing.";
+        return;
+      }
+      const result=compareMotions(template,candidate);
+      const details=result.score===null?result.reason:
+        "distance "+result.score.toFixed(4)+" (lower is closer; uncalibrated threshold "+result.threshold+")";
+      get("phrase-result").textContent=(result.matched?"SIMILAR MOTION: ":"NO MATCH: ")+details+
+        ". This is experimental sequence comparison, not a probability.";
+      window.dispatchEvent(new CustomEvent("overstrings:phrase-comparison",{
+        detail:{version:1,type:"overstrings.phrase-comparison",manual:true,
+          template_label:result.template_label,source:candidate.source,
+          matched:result.matched,score:result.score,reason:result.reason}
+      }));
+    } catch(e) {
+      get("phrase-result").textContent="Cannot compare: "+String(e.message||e);
     }
   });
   syncRecorder(true);

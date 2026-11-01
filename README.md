@@ -1,12 +1,22 @@
-# OverStrings — Living Gesture Bridge v2 candidate
+# OverStrings — Living Gesture Bridge Rung 3 candidate
 
 **Enter the Field / Φ369 Labs · MIT · local-first · browser-ready**
 
 OverStrings combines its existing Rust resonance event bridge with a portable, dependency-free WebXR hand gesture research playground.
 
-**Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 2 appears only after review, merge and successful Pages deployment).
+**Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 3 appears after review, merge and Pages deployment).
 
-## Rung 2: Hand Calibration + Liquid Motion Lab (PR candidate)
+## Rung 3: Liquid Language Lab (PR candidate)
+
+- Teach a named movement phrase from an explicitly completed capture or import an exported motion JSON file, with bounded file size and strict schema validation.
+- Make a second independent recording and manually compare against the reference. A constrained dynamic time-warping distance of wrist trajectories and palm-relative fingertip paths indicates preliminary similarity, **not calibrated probability**.
+- Reject missing/mismatched hands, invalid coordinates, insufficient movement, mismatched data sources and large timing differences. Comparing a recording with itself is refused.
+- Local-only, memory-only references. No automatic persistent template storage, telemetry or game-triggering controls.
+- Synthetic near-match and reverse demos plus tests are included, but do not validate physical Quest accuracy.
+
+[Read Rung 3 architecture and headset acceptance plan](docs/GESTURE_BRIDGE_V3.md).
+
+## Rung 2: Hand Calibration + Liquid Motion Lab
 
 - Independent **left/right hand** pinch and finger-extension sensitivity, plus configurable gesture dwell and tracking-loss timeout.
 - Explicit **Save settings locally** button. Only numerical sensitivity preferences may be stored in browser localStorage.
