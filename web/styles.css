@@ -43,3 +43,18 @@ a{color:#8bddff}@media(max-width:800px){main{padding-top:22px}.hero{grid-templat
 .practice-toggle input{accent-color:#7ddaff;width:19px;height:19px}
 #practice-events{padding-left:1.4em;font-size:.84rem;color:#d1e6f4;max-height:220px;overflow:auto}
 #practice-events li{margin:8px 0;overflow-wrap:anywhere}
+
+.host-section select{width:100%;background:#080f21;border:1px solid #50738f;border-radius:9px;color:#edf7ff;padding:10px;font:inherit}
+.host-section select:focus-visible{outline:3px solid #77e2c8;outline-offset:2px}
+.host-stage{border:1px solid #2b5b77;border-radius:16px;min-height:170px;display:grid;align-content:center;justify-items:center;gap:9px;padding:15px;background:radial-gradient(circle at center,#153251,#091124 75%);text-align:center}
+.host-symbol{display:grid;place-items:center;width:82px;height:82px;border:2px solid #72cefa;border-radius:50%;color:#a8eafe;font:600 43px Georgia,serif;transition:background .2s}
+.host-stage.spark{border-color:#edab66;background:radial-gradient(circle,#733c25,#18132b 75%)}
+.host-stage.spark .host-symbol{color:#ffc078;border-color:#ffb869}
+.host-stage.btm{border-color:#92e9bf;background:radial-gradient(circle,#173d3c,#0b1c29 75%)}
+.host-stage.btm .host-symbol{border-radius:12px;color:#a5edbb;border-color:#77d69e}
+.host-stage.domistika{border-color:#c99afb;background:radial-gradient(circle,#3f2459,#15152c 75%)}
+.host-stage.domistika .host-symbol{color:#f2bafb;border-color:#c99afb}
+.host-stage.genewrist{border-color:#84b6fd;background:radial-gradient(circle,#173b71,#101729 75%)}
+.host-stage.genewrist .host-symbol{color:#aed5ff;border-color:#86bafe}
+#host-events{padding-left:1.4em;color:#b8dbf0;max-height:140px;overflow:auto;font-size:.84rem}
+#host-events li{margin:6px 0;overflow-wrap:anywhere}
