@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — Host Adapter SDK and simulator (Rung 5 candidate, 2026-11-01)
+- Add host-side preview SDK and explicit, one-shot host consent for Spark, BTM, Domistika XR and Gen.E.Wrist.
+- Reject host/action mismatch, source mismatch, replayed/expired intent, malformed data and cooldown violations.
+- Add in-browser harmless host simulator, tests and integration documentation. No real game connection.
+
+
 ## Unreleased — Game Action Bridge (Rung 4 candidate, 2026-11-01)
 - Add explicit one-shot advisory action-intent gate with cooldown, fail-closed comparison checks and four allowlisted destinations.
 - Add local browser practice sandbox that requires manual arming, a reference phrase and a second comparison.

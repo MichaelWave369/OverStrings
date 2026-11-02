@@ -51,6 +51,7 @@ export class HostPreviewAdapter {
   }
   configure({hostId,source,allowSyntheticDemo=false}={}) {
     this.disarm();
+    this.config=null;
     if(!Object.hasOwn(HOST_ACTIONS,hostId))
       throw new TypeError("Unknown host");
     if(!ALLOWED_SOURCES.has(source)||typeof allowSyntheticDemo!=="boolean")

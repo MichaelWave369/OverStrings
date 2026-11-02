@@ -1,10 +1,20 @@
-# OverStrings — Living Gesture Bridge Rung 3 candidate
+# OverStrings — Living Gesture Bridge Rung 5 candidate
 
 **Enter the Field / Φ369 Labs · MIT · local-first · browser-ready**
 
 OverStrings combines its existing Rust resonance event bridge with a portable, dependency-free WebXR hand gesture research playground.
 
-**Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 3 appears after review, merge and Pages deployment).
+**Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 5 appears after PR review, merge and successful Pages deployment).
+
+## Rung 5: Host Adapter SDK + local game simulator (PR candidate)
+- The dependency-free **HostPreviewAdapter** is a reusable host-side module with allowlisted Spark, BTM, Domistika XR, and Gen.E.Wrist preview actions.
+- Every host response requires **a second, explicit one-shot enabling step**, separate from Rung 4 action-intent arming.
+- An untrusted advisory intent is checked for host/action pairing, source, bounded age, sequence and cooldown. Synthetic input needs an extra sandbox checkbox.
+- The host callback receives only an immutable, minimal preview object. No raw poses, remote requests, persistence, privileged actions or real game commands.
+- The browser's new Rung 5 simulator changes its visible stage when an allowed host preview arrives, demonstrating the integration protocol without connecting to any actual game.
+- This is **not a security boundary**: same-page JavaScript can forge an event, a source label, timestamps or client-side consent. Host games must implement independent runtime permission checks.
+
+[Host SDK guide, threat model, and test sequence](docs/GESTURE_BRIDGE_V5.md).
 
 ## Rung 4: Game Action Bridge — local practice preview (PR candidate)
 - Four **allowlisted preview targets**: Spark cast, Break the Matrix interact, Domistika XR stroke and Gen.E.Wrist open.
