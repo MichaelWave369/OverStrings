@@ -6,7 +6,18 @@ OverStrings combines its existing Rust resonance event bridge with a portable, d
 
 **Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 3 appears after review, merge and Pages deployment).
 
-## Rung 3: Liquid Language Lab (PR candidate)
+## Rung 4: Game Action Bridge — local practice preview (PR candidate)
+- Four **allowlisted preview targets**: Spark cast, Break the Matrix interact, Domistika XR stroke and Gen.E.Wrist open.
+- Teach a phrase, capture a distinct second take, explicitly **arm one-shot preview**, then manually compare.
+- The pure `ActionIntentGate` checks label, source, matched status, comparison distance, cooldown and manual origin. Arming resets after every attempted comparison, successful or not.
+- Synthetic demonstrations require a **separate opt-in checkbox**, disabled by default. Settings changes revoke arming.
+- On acceptance the browser emits only `overstrings:action-intent` with a versioned, advisory-only identifier. This **does not control any actual game** or grant app permissions.
+- The same-page event is not authenticated. Every game must retain its own authority, explicit consent, input validation and safety fallback.
+- No network access, tracking upload, persistent gesture/action permissions or automatic detection.
+
+[Read Rung 4 specification and integration contract](docs/GESTURE_BRIDGE_V4.md).
+
+## Rung 3: Liquid Language Lab
 
 - Teach a named movement phrase from an explicitly completed capture or import an exported motion JSON file, with bounded file size and strict schema validation.
 - Make a second independent recording and manually compare against the reference. A constrained dynamic time-warping distance of wrist trajectories and palm-relative fingertip paths indicates preliminary similarity, **not calibrated probability**.

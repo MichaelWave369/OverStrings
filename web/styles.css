@@ -36,3 +36,10 @@ a{color:#8bddff}@media(max-width:800px){main{padding-top:22px}.hero{grid-templat
 .file-label{font-size:.87rem;color:#c5def1;display:block;margin-top:20px}
 .phrase-result{border:1px solid #345477;background:#081426;color:#c4e9fa;border-radius:12px;min-height:82px;padding:15px;line-height:1.5;overflow-wrap:anywhere}
 @media(max-width:800px){.phrase-section{grid-template-columns:1fr}}
+
+.action-section select{width:100%;background:#080f21;border:1px solid #50738f;border-radius:9px;color:#edf7ff;padding:10px;font:inherit}
+.action-section select:focus-visible{outline:3px solid #77e2c8;outline-offset:2px}
+.practice-toggle{display:flex;align-items:center;gap:10px;margin:18px 0 5px;color:#d2ecff;font-size:.9rem}
+.practice-toggle input{accent-color:#7ddaff;width:19px;height:19px}
+#practice-events{padding-left:1.4em;font-size:.84rem;color:#d1e6f4;max-height:220px;overflow:auto}
+#practice-events li{margin:8px 0;overflow-wrap:anywhere}

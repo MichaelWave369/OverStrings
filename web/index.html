@@ -121,6 +121,32 @@
       <p class="status">Synthetic examples are development demonstrations only. Quest 3 recognition thresholds remain unverified.</p>
     </article>
   </section>
+  <section class="cards lower studio-section action-section" aria-label="Rung 4 game action intent sandbox">
+    <article>
+      <p class="eyebrow">RUNG 4 · SOVEREIGN GAME ACTION BRIDGE</p>
+      <h3>Map a phrase to a game action</h3>
+      <p>Select a destination for a <strong>local preview only</strong>. The code never controls a real game; it produces a bounded, advisory action-intent event after an explicit manual comparison.</p>
+      <label class="file-label" for="practice-target">Preview destination</label>
+      <select id="practice-target" aria-label="Preview destination"></select>
+      <label class="practice-toggle" for="practice-synthetic">
+        <input id="practice-synthetic" type="checkbox">
+        Allow synthetic recordings in sandbox preview
+      </label>
+      <p class="status">Off by default. WebXR recordings can be used without enabling the synthetic sandbox.</p>
+      <div class="actions compact">
+        <button type="button" class="primary" id="practice-arm">Arm one-shot preview</button>
+        <button type="button" id="practice-disarm" disabled>Disarm</button>
+      </div>
+      <p id="practice-status" role="status" aria-live="polite" class="status">No action armed. Teach a reference first.</p>
+    </article>
+    <article>
+      <p class="eyebrow">RUNG 4 · ADVISORY ONLY</p>
+      <h3>Local intent journal</h3>
+      <p>After arming, click <strong>Compare with reference</strong> in the Liquid Language Lab. Valid matches emit only a local advisory event with an allowlisted action ID. Every attempt disarms, including rejections.</p>
+      <ol id="practice-events" aria-live="polite"></ol>
+      <p class="status">No game permissions, network messages, raw motion data, or gameplay commands are created. A browser event is not an authentication mechanism.</p>
+    </article>
+  </section>
   <footer>Privacy: hand positions stay in browser memory. No raw hand upload, video API, accounts or analytics. <a href="https://github.com/MichaelWave369/OverStrings">Source code · MIT</a></footer>
 </main>
 </body>
