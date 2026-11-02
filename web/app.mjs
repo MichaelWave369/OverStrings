@@ -2,10 +2,12 @@ import {GestureTracker,toResonancePayload} from "./gesture.mjs";
 import {startHandXR} from "./xr-runtime.mjs";
 import {setupStudio} from "./studio.mjs";
 import {setupPractice} from "./practice.mjs";
+import {setupHostSimulator} from "./host-simulator.mjs";
 const el=id=>document.getElementById(id);
 const tracker=new GestureTracker();
 const studio=setupStudio(tracker);
 setupPractice(()=>studio.getTemplateMeta());
+setupHostSimulator();
 let xr=null, lastDisplay=0, sequence=0;
 function log(message) {
   const line=document.createElement("li");

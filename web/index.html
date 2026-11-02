@@ -13,7 +13,7 @@
   <header>
     <p class="eyebrow">ENTER THE FIELD / Φ369 LABS</p>
     <h1>OVER<span>STRINGS</span></h1>
-    <p class="muted">Living Gesture Bridge · Quest 3 WebXR · Experimental Rung 3</p>
+    <p class="muted">Living Gesture Bridge · Quest 3 WebXR · Experimental Rung 5</p>
   </header>
   <section class="hero">
     <div>
@@ -145,6 +145,36 @@
       <p>After arming, click <strong>Compare with reference</strong> in the Liquid Language Lab. Valid matches emit only a local advisory event with an allowlisted action ID. Every attempt disarms, including rejections.</p>
       <ol id="practice-events" aria-live="polite"></ol>
       <p class="status">No game permissions, network messages, raw motion data, or gameplay commands are created. A browser event is not an authentication mechanism.</p>
+    </article>
+  </section>
+  <section class="cards lower studio-section host-section" aria-label="Host game adapter integration sandbox">
+    <article>
+      <p class="eyebrow">RUNG 5 · HOST ADAPTER SDK</p>
+      <h3>Enable a host preview</h3>
+      <p>Separate from arming Rung 4, this explicitly approves one harmless simulated host response. It never controls a real game.</p>
+      <label class="file-label" for="host-target">Simulated game</label>
+      <select id="host-target" aria-label="Simulated host"></select>
+      <label class="file-label" for="host-source">Expected input source</label>
+      <select id="host-source"><option value="webxr">Quest WebXR</option><option value="synthetic">Synthetic desktop demo</option></select>
+      <label class="practice-toggle" for="host-synthetic">
+        <input id="host-synthetic" type="checkbox">
+        Permit synthetic input for this practice preview
+      </label>
+      <div class="actions compact">
+        <button id="host-enable" type="button" class="primary">Enable one host preview</button>
+        <button id="host-disable" type="button" disabled>Disable</button>
+      </div>
+      <p id="host-status" class="status" role="status" aria-live="polite">Disabled. Select a host and explicitly enable one preview.</p>
+    </article>
+    <article>
+      <p class="eyebrow">RUNG 5 · RESULT STAGE</p>
+      <h3>What a game would receive</h3>
+      <div id="host-stage" class="host-stage" aria-label="Non-interactive simulated game action">
+        <div id="host-symbol" class="host-symbol" aria-hidden="true">Φ</div>
+        <p id="host-result">No simulated game action yet.</p>
+      </div>
+      <p class="status">Host checks action mapping, source, local one-shot permission, age, sequence and cooldown. None of this authenticates JavaScript events.</p>
+      <ol id="host-events" aria-live="polite"></ol>
     </article>
   </section>
   <footer>Privacy: hand positions stay in browser memory. No raw hand upload, video API, accounts or analytics. <a href="https://github.com/MichaelWave369/OverStrings">Source code · MIT</a></footer>
