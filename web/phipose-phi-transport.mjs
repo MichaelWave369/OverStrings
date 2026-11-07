@@ -47,12 +47,21 @@ export function createPhiOSCompanion({onStatus=()=>{},onReceipt=()=>{}}={}) {
         intent.advisory!==true||intent.action_authority!==false||
         intent.execution_authority!==false ||
         !Number.isSafeInteger(intent.sequence)||
+        !["webxr","synthetic"].includes(intent.source)||
+        typeof intent.program!=="string"||intent.program.length>140||
+        !Number.isSafeInteger(intent.timestamp_ms)||
         !/^phios\.(view\.(home|research|build|ledger)|command\.open)$/.test(intent.action_id))
         return false;
       // Only a minimal advisory request, not hand motion or arbitrary data.
+      const safeIntent={
+        schema:"overstrings.phipose.intent.v0.1",version:1,
+        advisory:true,action_authority:false,execution_authority:false,
+        action_id:intent.action_id,source:intent.source,program:intent.program,
+        sequence:intent.sequence,timestamp_ms:intent.timestamp_ms
+      };
       target.postMessage({
         protocol:PHIPOSE_NAV_PROTOCOL,type:"command",session_id:session,
-        sent_at:Date.now(),intent
+        sent_at:Date.now(),intent:safeIntent
       },origin);
       onStatus("Gesture sentence sent. Waiting for host validation, not claiming success.");
       return true;
