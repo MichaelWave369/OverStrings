@@ -1,10 +1,19 @@
-# OverStrings — Living Gesture Bridge Rung 5 candidate
+# OverStrings — Living Gesture Bridge + ΦPose Vocabulary
 
 **Enter the Field / Φ369 Labs · MIT · local-first · browser-ready**
 
 OverStrings combines its existing Rust resonance event bridge with a portable, dependency-free WebXR hand gesture research playground.
 
 **Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 5 appears after PR review, merge and successful Pages deployment).
+
+## Rung 8: Universal Gesture Vocabulary — app-scoped language packs
+- **Data-only, versioned app vocabularies** describe gesture sentences, command labels and app context. Bundled scopes: PhiOS Shell, PhiOffice, Domistika XR and Gen.E-Wrist.
+- Pick the active app, then its command; the studio fills in a gesture sentence to practice. The same sentence can have a different meaning in another app without cross-app collisions.
+- Import a local JSON vocabulary (20 KB maximum). Imported packs are always **preview-only**, never permission grants or app execution instructions. Imports stay in memory.
+- **Only the separately consented, already-reviewed PhiOS navigation companion** can route its built-in UI commands. Other app bindings are future work.
+- Grammar, cross-command collision checks, namespace isolation, immutable imports and permission-negative tests are in CI.
+
+[Read the Rung 8 vocabulary contract](docs/PHIPOSE_VOCABULARY_V01.md) · [Example app manifest](examples/phipose-field-notes.v01.json).
 
 ## Rung 7: ΦPose Language — syntax + armed command-intent laboratory
 - Define small phrases from **left/right hand poses**, **two-hand chords**, and **wrist swipes**: `L:open > R:pinch` or `L:open+R:pinch > L:point`.
