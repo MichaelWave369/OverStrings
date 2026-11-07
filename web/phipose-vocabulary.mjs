@@ -94,9 +94,9 @@ const builtins=[
   {
     schema:VOCABULARY_SCHEMA,app_id:"phioffice",title:"PhiOffice Preview",version:"0.1.0",
     commands:[
-      {id:"phioffice.page.next",label:"Next Page",description:"Propose moving to the next document page.",
+      {id:"phioffice.page.next",label:"Next Slide (PhiDeck)",description:"Propose selecting the next PhiDeck slide when an approved host is enabled.",
         script:"L:point > R:swipe-right",mode:"preview_only"},
-      {id:"phioffice.page.previous",label:"Previous Page",description:"Propose moving to the previous document page.",
+      {id:"phioffice.page.previous",label:"Previous Slide (PhiDeck)",description:"Propose selecting the previous PhiDeck slide when an approved host is enabled.",
         script:"L:point > R:swipe-left",mode:"preview_only"},
       {id:"phioffice.palette.open",label:"Open Tools",description:"Propose showing the editor tools.",
         script:"L:open > R:pinch",mode:"preview_only"}
