@@ -3,11 +3,13 @@ import {startHandXR} from "./xr-runtime.mjs";
 import {setupStudio} from "./studio.mjs";
 import {setupPractice} from "./practice.mjs";
 import {setupHostSimulator} from "./host-simulator.mjs";
+import {setupPhiPoseUI} from "./phipose-ui.mjs";
 const el=id=>document.getElementById(id);
 const tracker=new GestureTracker();
 const studio=setupStudio(tracker);
 setupPractice(()=>studio.getTemplateMeta());
 setupHostSimulator();
+const poseUI=setupPhiPoseUI();
 let xr=null, lastDisplay=0, sequence=0;
 function log(message) {
   const line=document.createElement("li");
@@ -25,12 +27,14 @@ function emit(evt) {
   }
   log(evt.source.toUpperCase()+" | "+evt.handedness+" | "+evt.gesture+
     " / "+evt.phase+(payload?" → "+payload.preset_family_hint:""));
+  poseUI.onEvent(evt,evt.timestamp_ms);
 }
 function updateFrame(sources,time) {
   studio.onFrame(sources,time);
   for(const hand of ["left","right"]) {
     for(const evt of tracker.update(hand,sources[hand],time))emit(evt);
   }
+  poseUI.onFrame(sources,time,tracker);
   if(time-lastDisplay<90)return;
   lastDisplay=time;
   for(const hand of ["left","right"]) {
@@ -46,6 +50,7 @@ async function start() {
       onFrame:updateFrame,
       onEnd:()=>{
         studio.onSessionEnd();
+        poseUI.onSessionEnd();
         xr=null;tracker.reset();el("start").disabled=false;
         el("stop").disabled=true;el("mode").textContent="Headset session ended";
         el("left-status").textContent="inactive";
