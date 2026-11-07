@@ -6,6 +6,16 @@ OverStrings combines its existing Rust resonance event bridge with a portable, d
 
 **Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 5 appears after PR review, merge and successful Pages deployment).
 
+## Rung 10: Shared ΦPose Host SDK (zero-authority)
+
+- Extract a reusable, dependency-free ESM **ScopedPhiPoseHost** validator for explicitly consented app commands.
+- Strict host-side app IDs, commands, protocol envelopes, exact sender/origin/session binding, bounded grammar, replay and cooldown.
+- Context guards let each app deny unsafe UI transitions **without putting file/system actions inside the SDK**.
+- First adopter: [PhiOffice PhiDeck](https://github.com/MichaelWave369/phioffice369), which uses a byte-identical, review-pinned source snapshot.
+- Rung 9 behavior remains: PhiDeck next/previous slide is real UI selection; more powerful commands remain unimplemented.
+
+[SDK usage and security contract](packages/phipose-host-sdk/README.md).
+
 ## Rung 9: PhiOffice live PhiDeck gesture navigation (companion pilot)
 - Built-in PhiOffice `page.next` and `page.previous` gestures can now request **actual slide selection** in a separately approved PhiDeck editor.
 - Click **Open PhiOffice deck companion**; inside an opened PhiDeck file explicitly enable the five-minute host session. Consent is independent in both apps; synthetic demo is opt-in at both ends.
