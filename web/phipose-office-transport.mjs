@@ -4,23 +4,33 @@
  * Both pages must be same-origin and human-approved. Not authentication.
  */
 export const PHIPOSE_DECK_PROTOCOL='phioffice.phipose-deck.v0.1';
+export const PHIPOSE_EDITOR_PROTOCOL='phioffice.gesture-nav.v0.1';
 const SESSION=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const ACTIONS=Object.freeze(['phioffice.page.next','phioffice.page.previous']);
+const ACTIONS=Object.freeze({
+  [PHIPOSE_DECK_PROTOCOL]:Object.freeze(['phioffice.page.next','phioffice.page.previous']),
+  [PHIPOSE_EDITOR_PROTOCOL]:Object.freeze([
+    'phioffice.write.section.next','phioffice.write.section.previous',
+    'phioffice.grid.cell.next','phioffice.grid.cell.previous'
+  ])
+});
 const PROGRAM=/^([LR]:(open|pinch|grab|point|swipe-left|swipe-right)(\+[LR]:(open|pinch|grab|point|swipe-left|swipe-right))?)( > ([LR]:(open|pinch|grab|point|swipe-left|swipe-right)(\+[LR]:(open|pinch|grab|point|swipe-left|swipe-right))?)){1,4}$/;
 export function createPhiOfficeDeckCompanion({onStatus=()=>{},onReceipt=()=>{}}={}){
-  let popup=null,session=null,expires=0;
+  let popup=null,session=null,expires=0,protocol=null;
   const origin=window.location.origin;
   const live=()=>!!popup&&!popup.closed&&!!session&&Date.now()<expires;
-  const clear=()=>{popup=null;session=null;expires=0;};
+  const clear=()=>{popup=null;session=null;expires=0;protocol=null;};
   function onMessage(event){
     if(!popup||event.source!==popup||event.origin!==origin)return;
     const data=event.data;
-    if(!data||typeof data!=='object'||data.protocol!==PHIPOSE_DECK_PROTOCOL)return;
+    if(!data||typeof data!=='object'||!Object.hasOwn(ACTIONS,data.protocol))return;
+    // A new host permission is always an explicit approval inside the active editor.
     if(data.type==='ready'&&SESSION.test(data.session_id)&&
        Number.isSafeInteger(data.expires_at)&&
        data.expires_at>Date.now()+1000&&data.expires_at<=Date.now()+300500){
-      session=data.session_id;expires=data.expires_at;
-      onStatus('PhiOffice deck companion connected. Only slide navigation allowed.');
+      session=data.session_id;expires=data.expires_at;protocol=data.protocol;
+      onStatus(protocol===PHIPOSE_DECK_PROTOCOL?
+        'PhiOffice deck connected for slide selection only.':
+        'PhiOffice editor connected for read-only navigation only.');
     }else if(data.type==='receipt'){
       // A receipt means host acceptance for UI dispatch, not a persisted edit.
       onReceipt(data);
@@ -38,23 +48,23 @@ export function createPhiOfficeDeckCompanion({onStatus=()=>{},onReceipt=()=>{}}=
       const opened=window.open(url.href,'phipose-office-deck-companion');
       if(!opened){onStatus('Popup blocked. Enable popups, then try again.');return false;}
       popup=opened;
-      onStatus('In PhiOffice: open a PhiDeck workspace, then click Enable ΦPose deck navigation.');
+      onStatus('In PhiOffice: open PhiDeck, PhiWrite or PhiGrid, then enable ΦPose in that editor.');
       return true;
     },
     isConnected:live,
     disconnect(){clear();onStatus('PhiOffice companion disconnected.');},
     send(intent){
-      if(!live()){onStatus('No enabled PhiOffice deck session.');return false;}
+      if(!live()){onStatus('No enabled PhiOffice app session.');return false;}
       if(!intent||intent.schema!=='overstrings.phipose.intent.v0.1'||
          intent.advisory!==true||intent.action_authority!==false||
-         intent.execution_authority!==false||!ACTIONS.includes(intent.action_id)||
+         intent.execution_authority!==false||!ACTIONS[protocol]?.includes(intent.action_id)||
          !['webxr','synthetic'].includes(intent.source)||
          !Number.isSafeInteger(intent.sequence)||intent.sequence<1||
          !Number.isSafeInteger(intent.timestamp_ms)||intent.timestamp_ms<0||
          typeof intent.program!=='string'||intent.program.length>140||
          !PROGRAM.test(intent.program))return false;
       popup.postMessage({
-        protocol:PHIPOSE_DECK_PROTOCOL,type:'command',
+        protocol,type:'command',
         session_id:session,sent_at:Date.now(),
         intent:{
           schema:'overstrings.phipose.intent.v0.1',version:1,
