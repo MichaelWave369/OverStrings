@@ -1,0 +1,15 @@
+{
+  "name": "@phi369/phipose-host-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Zero-authority, bounded gesture-intent validator for locally consented PhiOS application UI hosts",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false
+}
