@@ -118,6 +118,13 @@ export class PhiPoseInterpreter {
     const step=this.binding.program.steps[this.index];
     const token={hand:evt.handedness,symbol:evt.gesture};
     const key=canonical(token);
+    // A swipe requires the wrist motion detector to see an open/point carrier
+    // pose first. That carrier is NOT a grammar token and must never complete
+    // the swipe. Only ignore it when this same hand's next token is a swipe.
+    if((evt.gesture==="open"||evt.gesture==="point")&&
+       step.some(x=>x.hand===evt.handedness&&x.symbol.startsWith("swipe-"))){
+      return {accepted:false,reason:"motion_carrier"};
+    }
     if(!step.some(x=>canonical(x)===key)){
       // All unexpected start events cancel the attempt rather than silently navigating.
       this.disarm();return {accepted:false,reason:"unexpected_symbol"};
