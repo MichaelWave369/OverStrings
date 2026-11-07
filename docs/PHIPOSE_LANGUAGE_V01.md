@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Translate **deliberate, user-armed gesture sentences** into bounded, inspectable, **advisory command requests** suitable for future review by PhiOS and individual apps. This rung delivers an actual parser, stateful interpreter, wrist-motion tokenizer, and a browser studio for live WebXR/synthetic input. It deliberately **does not yet send commands into PhiOS**, install an app, or grant execution authority.
+Translate **deliberate, user-armed gesture sentences** into bounded, inspectable, **advisory command requests** suitable for future review by PhiOS and individual apps. This rung delivers an actual parser, stateful interpreter, wrist-motion tokenizer, and a browser studio for live WebXR/synthetic input. A separately consented **same-origin PhiOS companion pilot** can now deliver a command to the PhiShell UI reducer. It does not install apps or grant execution authority.
 
 A meaningful visual control experience is not the same thing as uncontrolled OS automation. PhiOS already defines governed permissions, capabilities, and action leases, so the eventual host adapter must integrate with those controls and **not** bypass them.
 
@@ -28,7 +28,7 @@ symbol   = "open" | "pinch" | "grab" | "point" | "swipe-left" | "swipe-right" ;
 
 ## Interface
 
-Open `web/index.html` in Quest Browser over HTTPS. The Rung 7 panel offers a sentence input, allowlisted advisory target, source selector, synthetic opt-in, and an arm/disarm control. Use actual hand tracking inside the VR session or the separately labeled synthetic buttons. The output JSON is a **safe local preview**, never a host execution receipt.
+Open `web/index.html` in Quest Browser over HTTPS. The Rung 7 panel offers a sentence input, allowlisted advisory target, source selector, synthetic opt-in, and an arm/disarm control. Use actual hand tracking inside the VR session or the separately labeled synthetic buttons. The output JSON is a **safe local preview**. Optionally, click **Open PhiOS companion** and, in the opened PhiOS window, explicitly **Enable ΦPose companion** for five minutes. A recognized phrase can then request a real safe UI navigation action, and PhiOS returns an `accepted_for_ui_dispatch` receipt, **not** proof of an OS effect or a completed privileged action. Both browser windows must remain responsive; Quest 3 multiwindow WebXR behavior is unverified.
 
 ```json
 {
@@ -55,15 +55,15 @@ The event name is `overstrings:phipose-intent`. **No raw hand joints** are expor
 - `phios.view.ledger`
 - `phios.command.open`
 
-These strings are **proposal IDs only**, not wired PhiOS actions. No arbitrary host command, app URI, shell execution, filesystem operation, delete action, credentials, payments, networking changes, or privileged APIs are accepted.
+Without a separately enabled host session, these are **proposal IDs only**. With the opt-in same-origin companion pilot, PhiOS can dispatch them to its normal Shell UI reducer. No arbitrary host command, app URI, shell execution, filesystem operation, delete action, credentials, payments, networking changes, or privileged APIs are accepted.
 
-### Real PhiOS host adapter (proposed Rung 8)
+### PhiOS companion pilot and later production integration
 
-1. Add an in-origin PhiShell gesture input adapter with exact app/source/session registration and an explicit, revocable operator enable switch. A standalone GitHub Pages app cannot simply claim host authority through `postMessage`.
-2. Bind only **safe foreground UI navigation** to typed `ShellEvent` reducers (`SET_VIEW`, `OPEN_COMMAND`, etc). The user should see which gesture is bound and retain keyboard/mouse/controller access.
-3. Require independent human consent per app and per command class. Actions with environmental effects go through PhiOS governed capability and action lease mechanisms. A gesture is never a substitute for authentication.
-4. Implement host-side replay rejection, focus/input capture checks, explicit origin+source binding for any cross-window use, per-command timeouts, and a visible emergency disable shortcut.
-5. Keep command receipts separate: `recognized`, `host accepted`, `effect completed` are not synonyms. Never claim an app action succeeded because the interpreter emitted an advisory request.
+1. **Implemented pilot:** PhiOS has a manual, revocable five-minute host session, exact same-origin opener/source binding, host-generated session ID and a visible status/disable panel. A standalone GitHub Pages app cannot claim host authority through `postMessage` alone.
+2. **Implemented pilot:** only **safe foreground UI navigation** is mapped to typed `ShellEvent` reducers (`SET_VIEW`, `OPEN_COMMAND`). The user sees the selected command and retains normal keyboard/mouse/controller access.
+3. **Future:** use proper in-origin hand tracking or reviewed app-specific input bridges, and require independent human consent per app and per command class. Actions with environmental effects go through PhiOS governed capability and action lease mechanisms. A gesture is never authentication.
+4. **Partial pilot:** host-side replay rejection, freshness, cooldown, exact origin/source and a visible disable control exist. Focus/input capture verification, better pause/resume and a global emergency shortcut remain future work.
+5. **Implemented pilot:** command receipts distinguish `recognized`, `accepted_for_ui_dispatch`, and `effect completed` as different statuses; no latter receipt is currently issued.
 6. Actual XR adoption needs camera/tracker availability testing on Quest 3, confusion matrices across users/hand sizes, false activations, tracking-loss behavior and accessibility alternatives.
 
 ### Cultural atlas relationship
@@ -83,7 +83,7 @@ The wrist swipe tokenizer observes horizontal X translation relative to the WebX
 - Explicit one-shot arming; no passive gesture-to-command automation.
 - Synthetic demo disabled by default; changing settings cancels prior arming.
 - No network I/O, camera API, account identity, biometric enrollment or persistent gesture templates in Rung 7.
-- No arbitrary code evaluation, host privileges, arbitrary app endpoints or browser-to-PhiOS transport.
+- No arbitrary code evaluation, host privileges or arbitrary app endpoints. Optional same-origin popup messaging is UI-only and independently enabled in PhiOS.
 - Same-origin JS may spoof CustomEvents or source flags. Never treat this page as an authorization/security boundary.
 - Existing Rung 4/5 preview adapters and other integrations remain unchanged.
 - If a headset loses tracking during an active phrase, the interpreter cancels it. Hardware acceptance is still pending.
