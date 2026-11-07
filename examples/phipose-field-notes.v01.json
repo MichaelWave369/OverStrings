@@ -1,0 +1,29 @@
+{
+  "schema": "overstrings.phipose-vocabulary.v0.1",
+  "app_id": "field-notes",
+  "title": "Field Notes Practice",
+  "version": "1.0.0",
+  "commands": [
+    {
+      "id": "field-notes.page.next",
+      "label": "Next Note",
+      "description": "Suggest viewing the next note, without executing an app action.",
+      "script": "L:open > R:swipe-right",
+      "mode": "preview_only"
+    },
+    {
+      "id": "field-notes.page.previous",
+      "label": "Previous Note",
+      "description": "Suggest viewing the previous note, without executing an app action.",
+      "script": "L:open > R:swipe-left",
+      "mode": "preview_only"
+    },
+    {
+      "id": "field-notes.palette.open",
+      "label": "Show Note Palette",
+      "description": "Suggest opening a note palette, without executing an app action.",
+      "script": "L:point > R:pinch",
+      "mode": "preview_only"
+    }
+  ]
+}

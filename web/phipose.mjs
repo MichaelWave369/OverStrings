@@ -56,12 +56,22 @@ function validEvent(evt) {
       !evt.gesture.startsWith("swipe-"));
 }
 export class PhiPoseInterpreter {
-  constructor({stepTimeoutMs=1800,phraseTimeoutMs=6500,chordWindowMs=450,cooldownMs=1200}={}) {
+  constructor({stepTimeoutMs=1800,phraseTimeoutMs=6500,chordWindowMs=450,cooldownMs=1200,advisoryActionIds=null}={}) {
     if(![stepTimeoutMs,phraseTimeoutMs,chordWindowMs,cooldownMs].every(Number.isFinite) ||
       stepTimeoutMs<400||stepTimeoutMs>5000||phraseTimeoutMs<1600||phraseTimeoutMs>15000 ||
       chordWindowMs<100||chordWindowMs>1200||cooldownMs<500||cooldownMs>10000 ||
       phraseTimeoutMs<stepTimeoutMs) throw new RangeError("Invalid interpreter timing limits");
     Object.assign(this,{stepTimeoutMs,phraseTimeoutMs,chordWindowMs,cooldownMs});
+    // Callers may extend only the advisory vocabulary, never host capabilities.
+    // Actual PhiOS transport keeps its own fixed, independent allowlist.
+    if(advisoryActionIds!==null && (!Array.isArray(advisoryActionIds)||
+       advisoryActionIds.length<1||advisoryActionIds.length>12||
+       new Set(advisoryActionIds).size!==advisoryActionIds.length||
+       !advisoryActionIds.every(x=>typeof x==="string"&&
+         /^[a-z][a-z0-9-]{1,30}(?:\.[a-z][a-z0-9-]{1,30}){1,3}$/.test(x))))
+      throw new TypeError("Invalid advisory action registry");
+    this.advisoryActionIds=Object.freeze(advisoryActionIds===null?
+      Object.keys(PHIPOSE_ACTIONS):[...advisoryActionIds]);
     this.binding=null;this.armed=false;this.sequence=0;this.lastAccepted=-Infinity;
     this.resetProgress();
   }
@@ -70,7 +80,7 @@ export class PhiPoseInterpreter {
   }
   configure({script,actionId,source="webxr",allowSyntheticDemo=false}={}) {
     this.disarm();this.binding=null;
-    if(!Object.hasOwn(PHIPOSE_ACTIONS,actionId))throw new TypeError("Unapproved command");
+    if(!this.advisoryActionIds.includes(actionId))throw new TypeError("Unapproved advisory command");
     if(!SOURCES.includes(source)||typeof allowSyntheticDemo!=="boolean")
       throw new TypeError("Invalid input source");
     this.binding=Object.freeze({
