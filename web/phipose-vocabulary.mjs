@@ -70,7 +70,8 @@ export function compileVocabulary(input,{imported=true}={}) {
   });
 }
 export function parseImportedVocabulary(json) {
-  if(typeof json!=="string"||json.length>20000||!json.trim())error("invalid JSON input size");
+  if(typeof json!=="string"||!json.trim())error("invalid JSON input");
+  if(json.length>20000)error("manifest exceeds 20 KB");
   let value;try{value=JSON.parse(json);}catch{error("invalid JSON");}
   return compileVocabulary(value,{imported:true});
 }
