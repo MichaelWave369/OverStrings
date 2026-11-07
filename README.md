@@ -6,6 +6,15 @@ OverStrings combines its existing Rust resonance event bridge with a portable, d
 
 **Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 5 appears after PR review, merge and successful Pages deployment).
 
+## Rung 9: PhiOffice live PhiDeck gesture navigation (companion pilot)
+- Built-in PhiOffice `page.next` and `page.previous` gestures can now request **actual slide selection** in a separately approved PhiDeck editor.
+- Click **Open PhiOffice deck companion**; inside an opened PhiDeck file explicitly enable the five-minute host session. Consent is independent in both apps; synthetic demo is opt-in at both ends.
+- Host accepts only next/previous slide, never save/edit/delete, and refuses when presentation mode is active or a deck boundary is reached.
+- Cross-window messaging uses a same-origin opener and per-session checks, but **is not authentication**. Real Quest 3 multi-window behavior still requires testing.
+- Existing PhiOS Shell navigation remains unchanged. The other PhiOffice and app-vocabulary actions stay previews.
+
+[Read the PhiOffice Rung 9 contract](docs/PHIPOSE_PHIOFFICE_R9.md).
+
 ## Rung 8: Universal Gesture Vocabulary — app-scoped language packs
 - **Data-only, versioned app vocabularies** describe gesture sentences, command labels and app context. Bundled scopes: PhiOS Shell, PhiOffice, Domistika XR and Gen.E-Wrist.
 - Pick the active app, then its command; the studio fills in a gesture sentence to practice. The same sentence can have a different meaning in another app without cross-app collisions.

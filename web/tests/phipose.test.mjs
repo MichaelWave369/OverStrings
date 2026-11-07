@@ -131,3 +131,25 @@ test("wrist tokenizer does not accept invalid calibration",()=>{
   assert.throws(()=>new WristMotionTokenizer({axisRatio:1}),RangeError);
   assert.throws(()=>new WristMotionTokenizer({maxDurationMs:40}),RangeError);
 });
+
+test("a swipe-carrier hand pose is ignored only for a pending same-hand swipe",()=>{
+  const p=fresh("webxr","L:point > R:swipe-right");p.arm();
+  assert.equal(p.consume(gesture("left","point",1000),1000).reason,"step_completed");
+  assert.equal(p.consume(gesture("right","open",1200),1200).reason,"motion_carrier");
+  assert.equal(p.armed,true);
+  assert.equal(p.consume(gesture("right","point",1300),1300).reason,"motion_carrier");
+  assert.equal(p.consume({
+    type:"overstrings.motion",version:1,phase:"start",source:"webxr",
+    handedness:"right",gesture:"swipe-right",timestamp_ms:1500
+  },1500).accepted,true);
+
+  const strict=fresh("webxr","L:point > R:pinch");strict.arm();
+  assert.equal(strict.consume(gesture("left","point",2000),2000).reason,"step_completed");
+  assert.equal(strict.consume(gesture("right","open",2200),2200).reason,"unexpected_symbol");
+  assert.equal(strict.armed,false);
+
+  const wrongHand=fresh("webxr","L:point > R:swipe-right");wrongHand.arm();
+  assert.equal(wrongHand.consume(gesture("left","point",3000),3000).reason,"step_completed");
+  assert.equal(wrongHand.consume(gesture("left","open",3200),3200).reason,"unexpected_symbol");
+  assert.equal(wrongHand.armed,false);
+});

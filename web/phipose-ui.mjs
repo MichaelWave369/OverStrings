@@ -2,6 +2,7 @@ import {PhiPoseInterpreter,serializePhiPose} from "./phipose.mjs";
 import {BUILTIN_VOCABULARIES,getVocabulary,parseImportedVocabulary,registerPreviewVocabulary} from "./phipose-vocabulary.mjs";
 import {WristMotionTokenizer} from "./wrist-motion.mjs";
 import {createPhiOSCompanion} from "./phipose-phi-transport.mjs";
+import {createPhiOfficeDeckCompanion} from "./phipose-office-transport.mjs";
 
 /**
  * Rung 7 visible practice studio. Opt-in per phrase, no host integration.
@@ -65,6 +66,11 @@ export function setupPhiPoseUI() {
         <button type="button" id="phipose-disconnect-phios">Disconnect companion</button>
       </div>
       <p id="phipose-link-status" class="status" role="status" aria-live="polite">No PhiOS connection. Host permission is separate and disabled by default.</p>
+      <div class="actions compact">
+        <button type="button" id="phipose-open-office">Open PhiOffice deck companion</button>
+        <button type="button" id="phipose-disconnect-office">Disconnect PhiOffice</button>
+      </div>
+      <p id="phipose-office-status" class="status" role="status" aria-live="polite">PhiOffice deck navigation disabled. Open a PhiDeck file and enable its host separately.</p>
       <p class="status">Same-origin messages do not grant security authority. PhiOS only accepts explicitly enabled, time-limited, safe shell navigation. Quest multiwindow/background behavior remains unverified.</p>
     </article>`;
   const footer=document.querySelector("footer");
@@ -80,6 +86,16 @@ export function setupPhiPoseUI() {
   });
   get("phipose-open-phios").addEventListener("click",()=>companion.open());
   get("phipose-disconnect-phios").addEventListener("click",()=>companion.disconnect());
+  const office=createPhiOfficeDeckCompanion({
+    onStatus:message=>{get("phipose-office-status").textContent=message;},
+    onReceipt:receipt=>{
+      get("phipose-office-status").textContent=receipt.accepted?
+        "PhiOffice accepted slide navigation for UI dispatch: "+String(receipt.action_id):
+        "PhiOffice denied: "+String(receipt.reason);
+    }
+  });
+  get("phipose-open-office").addEventListener("click",()=>office.open());
+  get("phipose-disconnect-office").addEventListener("click",()=>office.disconnect());
   let engine=new PhiPoseInterpreter();
   const motion=new WristMotionTokenizer();
   const select=get("phipose-action"),scope=get("phipose-app");
@@ -102,7 +118,11 @@ export function setupPhiPoseUI() {
     for(const command of vocab.commands){
       const option=document.createElement("option");
       option.value=command.id;
-      option.textContent=command.label+" · "+(command.mode==="shell_ui"?"PhiOS UI":"Preview");
+      const deckLive=scope.value==="phioffice"&&
+        vocab.provenance==="bundled_reviewed_reference"&&
+        ["phioffice.page.next","phioffice.page.previous"].includes(command.id);
+      option.textContent=command.label+" · "+(command.mode==="shell_ui"?"PhiOS UI":
+        deckLive?"PhiDeck UI (separate consent)":"Preview");
       select.append(option);
     }
     if(preferredId && vocab.commands.some(c=>c.id===preferredId))select.value=preferredId;
@@ -113,8 +133,12 @@ export function setupPhiPoseUI() {
     const command=vocab?.commands.find(c=>c.id===select.value);
     if(command){
       get("phipose-script").value=command.script;
+      const deckLive=scope.value==="phioffice"&&
+        vocab.provenance==="bundled_reviewed_reference"&&
+        ["phioffice.page.next","phioffice.page.previous"].includes(command.id);
       get("phipose-vocab-status").textContent=vocab.title+" v"+vocab.version+
         " · "+(command.mode==="shell_ui"?"PhiOS UI-only (separate permission required)":
+          deckLive?"PhiDeck slide selection; separate host approval required":
           "Advisory preview only; not wired to this app");
     }
     disarm();
@@ -179,13 +203,21 @@ export function setupPhiPoseUI() {
       get("phipose-output").textContent=JSON.stringify(intent,null,2);
       const vocabulary=getVocabulary(catalog,scope.value);
       const command=vocabulary?.commands.find(c=>c.id===intent.action_id);
+      const deckLive=scope.value==="phioffice"&&
+        vocabulary?.provenance==="bundled_reviewed_reference"&&
+        ["phioffice.page.next","phioffice.page.previous"].includes(intent.action_id);
       status(command?.mode==="shell_ui" ?
         "Gesture recognized. PhiOS UI request only; host receipt required." :
+        deckLive?"Gesture recognized. PhiDeck action requires its independently enabled host receipt." :
         "Gesture recognized for "+(vocabulary?.title||"app")+". Preview only; app did NOT execute.");
       window.dispatchEvent(new CustomEvent("overstrings:phipose-intent",{detail:intent}));
-      // Only a separately consented PhiOS popup can consume this advisory.
+      // Only separately consented, independently allowlisted hosts may respond.
       if(scope.value==="phios" && command?.mode==="shell_ui" && companion.isConnected())
         companion.send(intent);
+      if(scope.value==="phioffice" &&
+        ["phioffice.page.next","phioffice.page.previous"].includes(intent.action_id) &&
+        vocabulary?.provenance==="bundled_reviewed_reference" && office.isConnected())
+        office.send(intent);
     }else if(["unexpected_symbol","source_denied","stale_event","phrase_expired","invalid_event","clock_invalid"].includes(result.reason)){
       status("Phrase cancelled: "+result.reason+". Re-arm explicitly.");
     }else if(result.reason==="step_completed"){
