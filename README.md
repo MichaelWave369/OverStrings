@@ -6,6 +6,15 @@ OverStrings combines its existing Rust resonance event bridge with a portable, d
 
 **Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 5 appears after PR review, merge and successful Pages deployment).
 
+## Rung 7: ΦPose Language — syntax + armed command-intent laboratory
+- Define small phrases from **left/right hand poses**, **two-hand chords**, and **wrist swipes**: `L:open > R:pinch` or `L:open+R:pinch > L:point`.
+- Pure, bounded local parser and one-shot interpreter. Separate source selection, synthetic opt-in, timeouts, cooldown, and cancellation.
+- Live WebXR gestures and provisional wrist movement can feed the Rung 7 studio; synthetic test buttons remain visibly separate.
+- Recognized sentences produce **advisory command requests with zero action/execution authority**. They **do not control PhiOS or launch apps yet**. Future host integration must use PhiOS's own permission/lease gates.
+- Existing gesture bridge and Mudra Atlas are preserved. Culturally sourced mudras remain **educational references**, not silently redefined command tokens.
+
+[Read ΦPose grammar, integration design, and headset acceptance plan](docs/PHIPOSE_LANGUAGE_V01.md).
+
 ## Rung 5: Host Adapter SDK + local game simulator (PR candidate)
 - The dependency-free **HostPreviewAdapter** is a reusable host-side module with allowlisted Spark, BTM, Domistika XR, and Gen.E.Wrist preview actions.
 - Every host response requires **a second, explicit one-shot enabling step**, separate from Rung 4 action-intent arming.
