@@ -58,3 +58,10 @@ a{color:#8bddff}@media(max-width:800px){main{padding-top:22px}.hero{grid-templat
 .host-stage.genewrist .host-symbol{color:#aed5ff;border-color:#86bafe}
 #host-events{padding-left:1.4em;color:#b8dbf0;max-height:140px;overflow:auto;font-size:.84rem}
 #host-events li{margin:6px 0;overflow-wrap:anywhere}
+
+
+/* Rung 8: app vocabulary selection and local JSON imports */
+.phipose-section input[type=file] { display:block; max-width:100%; width:100%; margin:8px 0 13px; color:#d6e6f7; font:inherit; font-size:.84rem; }
+.phipose-section input[type=file]::file-selector-button { border-radius:8px; border:1px solid #50738f; background:#172c4a; color:#ebf6ff; padding:8px 11px; margin-right:10px; cursor:pointer; }
+.phipose-section label { display:block; margin-top:13px; font-size:.86rem; color:#c5def1; }
+.phipose-section .practice-toggle { display:flex; }
