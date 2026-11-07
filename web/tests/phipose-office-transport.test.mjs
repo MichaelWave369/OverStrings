@@ -40,7 +40,7 @@ test('PhiOffice companion needs explicit same-origin popup and host-issued sessi
     assert.equal(sent[0].origin,'https://example.test');
     assert.equal(sent[0].value.protocol,PHIPOSE_DECK_PROTOCOL);
     assert.equal(sent[0].value.intent.private_joint_data,undefined);
-    assert.equal(Object.keys(sent[0].value.intent).length,9);
+    assert.equal(Object.keys(sent[0].value.intent).length,10);
     assert.equal(sent[0].value.intent.action_id,'phioffice.page.next');
     onMessage({source:popup,origin:'https://example.test',data:{
       protocol:PHIPOSE_DECK_PROTOCOL,type:'receipt',accepted:true,
