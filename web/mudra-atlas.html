@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d1a">
+  <title>OverStrings · Sourced Mudra Atlas</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .atlas-hero{background:linear-gradient(140deg,#122c42,#121631);padding:25px;border:1px solid #315877;border-radius:17px;line-height:1.65}
+    .atlas-controls{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0}
+    .atlas-controls label{display:grid;gap:5px;color:#bbd7ed;font-size:.9rem;flex:1;min-width:200px}
+    .atlas-controls input,.atlas-controls select{font:inherit;padding:12px;background:#0b1b30;border:1px solid #6085a2;border-radius:10px;color:#eaffff}
+    .atlas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+    .atlas-item{background:#0d1931;border:1px solid #31506b;border-radius:14px;padding:21px;line-height:1.55}
+    .atlas-item h2{margin:.2rem 0 .6rem;font-size:1.35rem;color:#def4ff}
+    .atlas-item h3{font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;color:#8dd6ed;margin:16px 0 3px}
+    .atlas-item p{margin:0;color:#c7d9eb}
+    .atlas-kicker{color:#8cdfce;font-size:.8rem;letter-spacing:.04em}
+    .atlas-note{background:#0a2233;padding:10px;border-radius:8px;font-size:.85rem;margin-top:13px!important}
+    .atlas-sources{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:5px;font-size:.86rem}
+    .atlas-summary{color:#aed1e6;font-size:.9rem}
+    .atlas-safe{font-size:.87rem;color:#b8d9e2}
+    .atlas-item a{text-decoration:underline;text-underline-offset:2px}
+  </style>
+</head>
+<body>
+<main>
+<header><p class="eyebrow">Φ369 LABS / OVERSTRINGS</p><h1>MUDRA <span>ATLAS</span></h1>
+<p class="muted">Rung 6 · Historical sources first · Gesture geometry second</p></header>
+<section class="atlas-hero">
+<h2>Hands carry histories, not universal command codes.</h2>
+<p>This is an educational collection of documented gestures from Buddhist iconography and Indian classical dance, with representative physical descriptions, source links, and potential WebXR tracking constraints. Traditional meanings are culturally situated. They are not scientific proof of physiological effects.</p>
+<p><strong>Not a live detector:</strong> these references do not automatically recognize gestures, activate game actions, or claim Quest 3 validation. Hand tracking remains opt-in in the separate playground.</p>
+<p><a href="./index.html">Back to OverStrings WebXR playground</a></p>
+</section>
+<div class="atlas-controls" role="group" aria-label="Filter mudra reference cards">
+<label>Search gesture, meaning or hand position<input id="atlas-search" type="search" placeholder="Try Abhaya, thumb, crown…" autocomplete="off"></label>
+<label>Tradition<select id="atlas-tradition"><option value="all">All documented traditions</option><option value="Buddhist">Buddhist iconography</option><option value="dance">Classical dance</option></select></label>
+</div>
+<p class="atlas-summary" id="atlas-count" role="status" aria-live="polite"></p>
+<div id="atlas-grid" class="atlas-grid" aria-label="Historical gesture references"></div>
+<section class="atlas-hero" style="margin-top:24px">
+<h2>Future research, not invented certainty</h2>
+<p>The source index also records all 28 single-hand hastas enumerated in the Abhinaya Darpaṇa and the ten hatha-yoga mudra/bandha practices of the Haṭha Yoga Pradīpikā. Those ten are often full-body practices, not ten finger poses. We will not add an automatic classifier until there are source-reviewed variants, multiple real Quest captures, calibrated thresholds and opt-in safety gates.</p>
+<p id="atlas-index-summary"></p>
+</section>
+<footer>Educational and local-first · No tracking, recording, cookies or uploads on this page · <a href="https://github.com/MichaelWave369/OverStrings">Project source (MIT)</a></footer>
+</main>
+<script type="module">
+import {MUDRA_CATALOG,MUDRA_SOURCES,ABHINAYA_DARPANA_SINGLE_28,HATHA_PRADIPIKA_TEN,findMudras} from "./mudra-atlas.mjs";
+const search=document.getElementById("atlas-search"),tradition=document.getElementById("atlas-tradition");
+const grid=document.getElementById("atlas-grid"),count=document.getElementById("atlas-count");
+function child(tag,cls,text,parent) {const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=text;parent.append(e);return e;}
+function render(){
+  const entries=findMudras(search.value,tradition.value);
+  grid.replaceChildren();
+  for(const item of entries){
+    const card=child("article","atlas-item","",grid);
+    child("div","atlas-kicker",item.tradition+" / "+item.kind.replace("_"," "),card);
+    child("h2","",item.name,card);
+    child("h3","","Representative form",card);child("p","",item.pose,card);
+    child("h3","","Historical use or association",card);child("p","",item.meaning,card);
+    child("h3","","XR research constraint",card);child("p","atlas-safe",item.tracking.replaceAll("_"," ")+" (not calibrated)",card);
+    if(item.notes)child("p","atlas-note",item.notes,card);
+    child("h3","","Sources",card);
+    const sources=child("ul","atlas-sources","",card);
+    for(const id of item.sourceIds){const src=MUDRA_SOURCES[id];const li=child("li","","",sources);
+      const link=child("a","",src.title,li);link.href=src.url;link.target="_blank";link.rel="noopener noreferrer";
+    }
+  }
+  count.textContent=entries.length+" of "+MUDRA_CATALOG.length+" curated reference cards. No automatic recognition or action binding.";
+  if(!entries.length)child("p","atlas-summary","No matching reference yet.",grid);
+}
+search.addEventListener("input",render);tradition.addEventListener("change",render);
+document.getElementById("atlas-index-summary").textContent="Indexed for research: "+ABHINAYA_DARPANA_SINGLE_28.length+" classical-dance single-hand names; "+HATHA_PRADIPIKA_TEN.length+" hatha-yoga practices. Their list membership does not imply gesture capture or classification readiness.";
+render();
+</script>
+</body>
+</html>

@@ -78,3 +78,14 @@ window.addEventListener("overstrings:resonance-payload",e=>{
   // A local JSON preview. No live Rust process or network transport is present.
   el("bridge").textContent="Local mock preview · "+e.detail.transport_class;
 });
+
+
+// Rung 6 is a standalone educational reference, not part of gesture recognition.
+const atlasFooter = document.querySelector("footer");
+if (atlasFooter) {
+  const atlasLink = document.createElement("a");
+  atlasLink.href = "./mudra-atlas.html";
+  atlasLink.textContent = "Sourced Mudra Atlas";
+  atlasFooter.append(document.createTextNode(" · "));
+  atlasFooter.append(atlasLink);
+}
