@@ -1,5 +1,6 @@
 import {PhiPoseInterpreter,PHIPOSE_ACTIONS,serializePhiPose} from "./phipose.mjs";
 import {WristMotionTokenizer} from "./wrist-motion.mjs";
+import {createPhiOSCompanion} from "./phipose-phi-transport.mjs";
 
 /**
  * Rung 7 visible practice studio. Opt-in per phrase, no host integration.
@@ -48,11 +49,26 @@ export function setupPhiPoseUI() {
       </div>
       <p class="status" id="phipose-readout">Language symbols: open, pinch, grab, point, swipe-left, swipe-right.</p>
       <pre id="phipose-output">No intent emitted. A recognized phrase cannot control PhiOS yet.</pre>
-      <p class="status">Recognition and source labels on the same page are not authentication. Future PhiOS host adapter must independently accept, scope and authorize any request.</p>
+      <div class="actions compact">
+        <button type="button" id="phipose-open-phios">Open PhiOS companion</button>
+        <button type="button" id="phipose-disconnect-phios">Disconnect companion</button>
+      </div>
+      <p id="phipose-link-status" class="status" role="status" aria-live="polite">No PhiOS connection. Host permission is separate and disabled by default.</p>
+      <p class="status">Same-origin messages do not grant security authority. PhiOS only accepts explicitly enabled, time-limited, safe shell navigation. Quest multiwindow/background behavior remains unverified.</p>
     </article>`;
   const footer=document.querySelector("footer");
   footer?.parentNode.insertBefore(host,footer);
   const get=id=>document.getElementById(id);
+  const companion=createPhiOSCompanion({
+    onStatus:message=>{get("phipose-link-status").textContent=message;},
+    onReceipt:receipt=>{
+      get("phipose-link-status").textContent=receipt.accepted?
+        "PhiOS accepted for UI dispatch: "+String(receipt.action_id):
+        "PhiOS denied: "+String(receipt.reason);
+    }
+  });
+  get("phipose-open-phios").addEventListener("click",()=>companion.open());
+  get("phipose-disconnect-phios").addEventListener("click",()=>companion.disconnect());
   const engine=new PhiPoseInterpreter();
   const motion=new WristMotionTokenizer();
   const select=get("phipose-action");
@@ -97,6 +113,8 @@ export function setupPhiPoseUI() {
       get("phipose-output").textContent=JSON.stringify(intent,null,2);
       status("Sentence recognized. Advisory request only. Host execution has NOT occurred.");
       window.dispatchEvent(new CustomEvent("overstrings:phipose-intent",{detail:intent}));
+      // Only a separately consented PhiOS popup can consume this advisory.
+      if(companion.isConnected())companion.send(intent);
     }else if(["unexpected_symbol","source_denied","stale_event","phrase_expired","invalid_event","clock_invalid"].includes(result.reason)){
       status("Phrase cancelled: "+result.reason+". Re-arm explicitly.");
     }else if(result.reason==="step_completed"){

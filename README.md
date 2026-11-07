@@ -10,10 +10,13 @@ OverStrings combines its existing Rust resonance event bridge with a portable, d
 - Define small phrases from **left/right hand poses**, **two-hand chords**, and **wrist swipes**: `L:open > R:pinch` or `L:open+R:pinch > L:point`.
 - Pure, bounded local parser and one-shot interpreter. Separate source selection, synthetic opt-in, timeouts, cooldown, and cancellation.
 - Live WebXR gestures and provisional wrist movement can feed the Rung 7 studio; synthetic test buttons remain visibly separate.
-- Recognized sentences produce **advisory command requests with zero action/execution authority**. They **do not control PhiOS or launch apps yet**. Future host integration must use PhiOS's own permission/lease gates.
+- Recognized sentences produce **advisory, zero-authority command requests**. With the optional, separately enabled same-origin [PhiOS companion host](https://github.com/MichaelWave369/PhiOS/pull/405), they can request **real PhiShell UI navigation only**. No app launch, OS effect or privileged capability is granted.
 - Existing gesture bridge and Mudra Atlas are preserved. Culturally sourced mudras remain **educational references**, not silently redefined command tokens.
 
 [Read ΦPose grammar, integration design, and headset acceptance plan](docs/PHIPOSE_LANGUAGE_V01.md).
+
+**PhiOS connection pilot:** OverStrings [Rung 7b companion PR](https://github.com/MichaelWave369/OverStrings/pull/11) implements an operator-approved popup bridge to safe PhiShell navigation (Home, Research, Build, Ledger, command palette). The host remains disabled by default and requires a separate consent click in PhiOS. Quest multiwindow XR behavior is unverified.
+
 
 ## Rung 5: Host Adapter SDK + local game simulator (PR candidate)
 - The dependency-free **HostPreviewAdapter** is a reusable host-side module with allowlisted Spark, BTM, Domistika XR, and Gen.E.Wrist preview actions.
