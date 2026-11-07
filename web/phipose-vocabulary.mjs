@@ -99,7 +99,19 @@ const builtins=[
       {id:"phioffice.page.previous",label:"Previous Slide (PhiDeck)",description:"Propose selecting the previous PhiDeck slide when an approved host is enabled.",
         script:"L:point > R:swipe-left",mode:"preview_only"},
       {id:"phioffice.palette.open",label:"Open Tools",description:"Propose showing the editor tools.",
-        script:"L:open > R:pinch",mode:"preview_only"}
+        script:"L:open > R:pinch",mode:"preview_only"},
+      {id:"phioffice.write.section.next",label:"Next Heading (PhiWrite)",
+        description:"Move the PhiWrite editor cursor to the next Markdown heading without editing.",
+        script:"L:open > R:point",mode:"preview_only"},
+      {id:"phioffice.write.section.previous",label:"Previous Heading (PhiWrite)",
+        description:"Move the PhiWrite editor cursor to the previous Markdown heading without editing.",
+        script:"L:grab > R:point",mode:"preview_only"},
+      {id:"phioffice.grid.cell.next",label:"Next Cell (PhiGrid)",
+        description:"Focus the next visible grid cell without changing its contents.",
+        script:"L:pinch > R:swipe-right",mode:"preview_only"},
+      {id:"phioffice.grid.cell.previous",label:"Previous Cell (PhiGrid)",
+        description:"Focus the previous visible grid cell without changing its contents.",
+        script:"L:pinch > R:swipe-left",mode:"preview_only"}
     ]
   },
   {
