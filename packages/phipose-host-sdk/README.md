@@ -75,7 +75,7 @@ The SDK does not attest that a physical user actually performed the gesture. Bro
 
 - Canonical checked-in source: `packages/phipose-host-sdk/index.mjs`.
 - PhiOffice vendor snapshot: `apps/web/src/lib/phiPoseHostCore.js` in `MichaelWave369/phioffice369`.
-- Verified byte-identical Git blob for this Rung 10 candidate: `70bf6014f7b69ec0efcf5289687e3cac01f648bc`.
+- Verified byte-identical Git blob for this Rung 10 candidate: `46d852582327d38966fdb01aace666bd3f9cd9cd`.
 - PhiOffice's `tests/phipose-host-core.test.js` pins that Git blob SHA offline. Review both repos before bumping the vendored source. No runtime package download or SaaS dependency is introduced.
 
 ## Verification
