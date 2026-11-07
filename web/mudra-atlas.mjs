@@ -45,7 +45,7 @@ export const MUDRA_CATALOG = Object.freeze([
     "Four fingers extended and held together; thumb bent toward the fingers or palm.",
     "A codified expressive hand with many contextual uses, including cloud, wind, and prohibition.",["ad_single","natya"],"single_hand_candidate",
     "One hasta is not one fixed emotional state."),
-  row("dance.tripat āka".replace(" ",""),"Tripataka","Abhinaya Darpaṇa / dance","single_hand",
+  row("dance.tripataka","Tripataka","Abhinaya Darpaṇa / dance","single_hand",
     "Start from Pataka, then bend the ring finger while the other three long fingers stay extended.",
     "A codified expressive hand used for a crown, tree, flame, and other meanings.",["ad_single","natya"],"single_hand_candidate"),
   row("dance.mushti","Mushti","Abhinaya Darpaṇa / dance","single_hand",
