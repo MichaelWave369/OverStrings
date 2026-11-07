@@ -118,7 +118,11 @@ export function setupPhiPoseUI() {
     for(const command of vocab.commands){
       const option=document.createElement("option");
       option.value=command.id;
-      option.textContent=command.label+" · "+(command.mode==="shell_ui"?"PhiOS UI":"Preview");
+      const deckLive=scope.value==="phioffice"&&
+        vocab.provenance==="bundled_reviewed_reference"&&
+        ["phioffice.page.next","phioffice.page.previous"].includes(command.id);
+      option.textContent=command.label+" · "+(command.mode==="shell_ui"?"PhiOS UI":
+        deckLive?"PhiDeck UI (separate consent)":"Preview");
       select.append(option);
     }
     if(preferredId && vocab.commands.some(c=>c.id===preferredId))select.value=preferredId;
@@ -129,8 +133,12 @@ export function setupPhiPoseUI() {
     const command=vocab?.commands.find(c=>c.id===select.value);
     if(command){
       get("phipose-script").value=command.script;
+      const deckLive=scope.value==="phioffice"&&
+        vocab.provenance==="bundled_reviewed_reference"&&
+        ["phioffice.page.next","phioffice.page.previous"].includes(command.id);
       get("phipose-vocab-status").textContent=vocab.title+" v"+vocab.version+
         " · "+(command.mode==="shell_ui"?"PhiOS UI-only (separate permission required)":
+          deckLive?"PhiDeck slide selection; separate host approval required":
           "Advisory preview only; not wired to this app");
     }
     disarm();
@@ -195,8 +203,12 @@ export function setupPhiPoseUI() {
       get("phipose-output").textContent=JSON.stringify(intent,null,2);
       const vocabulary=getVocabulary(catalog,scope.value);
       const command=vocabulary?.commands.find(c=>c.id===intent.action_id);
+      const deckLive=scope.value==="phioffice"&&
+        vocabulary?.provenance==="bundled_reviewed_reference"&&
+        ["phioffice.page.next","phioffice.page.previous"].includes(intent.action_id);
       status(command?.mode==="shell_ui" ?
         "Gesture recognized. PhiOS UI request only; host receipt required." :
+        deckLive?"Gesture recognized. PhiDeck action requires its independently enabled host receipt." :
         "Gesture recognized for "+(vocabulary?.title||"app")+". Preview only; app did NOT execute.");
       window.dispatchEvent(new CustomEvent("overstrings:phipose-intent",{detail:intent}));
       // Only separately consented, independently allowlisted hosts may respond.
