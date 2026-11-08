@@ -115,14 +115,29 @@ const builtins=[
     ]
   },
   {
-    schema:VOCABULARY_SCHEMA,app_id:"domistika",title:"Domistika XR Preview",version:"0.1.0",
+    schema:VOCABULARY_SCHEMA,app_id:"domistika",title:"Domistika XR",version:"0.1.0",
     commands:[
-      {id:"domistika.brush.next",label:"Next Brush",description:"Propose choosing the next brush.",
+      {id:"domistika.brush.next",label:"Next Brush",description:"Choose the next brush style for future strokes only.",
         script:"L:open > R:swipe-right",mode:"preview_only"},
-      {id:"domistika.brush.previous",label:"Previous Brush",description:"Propose choosing the previous brush.",
+      {id:"domistika.brush.previous",label:"Previous Brush",description:"Choose the previous brush style for future strokes only.",
         script:"L:open > R:swipe-left",mode:"preview_only"},
-      {id:"domistika.palette.open",label:"Open Palette",description:"Propose showing paint controls.",
-        script:"L:open+R:pinch > R:point",mode:"preview_only"}
+      {id:"domistika.palette.open",label:"Open Palette",description:"Propose showing paint controls. This action is not implemented in the host.",
+        script:"L:open+R:pinch > R:point",mode:"preview_only"},
+      {id:"domistika.room.home",label:"Studio Home",
+        description:"Navigate to Domistika Studio Home without changing artwork.",
+        script:"L:open > R:grab",mode:"preview_only"},
+      {id:"domistika.room.canvas",label:"Canvas Studio",
+        description:"Navigate to the 2D canvas/easel room without changing artwork.",
+        script:"L:point > R:open",mode:"preview_only"},
+      {id:"domistika.room.spatial",label:"3D Painting",
+        description:"Navigate to spatial painting without starting a stroke.",
+        script:"L:point > R:grab",mode:"preview_only"},
+      {id:"domistika.room.workshop",label:"Sculpture Workshop",
+        description:"Navigate to the sculpture room without modifying objects.",
+        script:"L:grab > R:open",mode:"preview_only"},
+      {id:"domistika.room.gallery",label:"Art Gallery",
+        description:"Navigate to the temporary gallery viewing room.",
+        script:"L:grab > R:pinch",mode:"preview_only"}
     ]
   },
   {
