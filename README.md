@@ -6,6 +6,15 @@ OverStrings combines its existing Rust resonance event bridge with a portable, d
 
 **Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 5 appears after PR review, merge and successful Pages deployment).
 
+## Rung 12 · Domistika XR Room and Brush UI Companion
+
+- Built-in gesture sentences now describe five Domistika XR studio destinations and next/previous brush-style selection.
+- **Separate, explicitly consented Domistika host** applies only these seven fixed actions: room presentation or a future-stroke brush setting. The `domistika.palette.open` vocabulary remains preview-only.
+- Sender uses exact-origin popup, host-issued five-minute session, bounded advisory schema and a strict action allowlist. No artwork/paint/save/delete/execution.
+- Shared SDK snapshot is review-pinned in Domistika XR. Real Quest 3 multiwindow behavior still requires headset testing.
+
+[Read the Rung 12 companion and acceptance plan](docs/PHIPOSE_DOMISTIKA_R12.md).
+
 ## Rung 11: PhiWrite headings and PhiGrid cell navigation
 - New **real, opt-in, UI-only** commands for next/previous Markdown heading in PhiWrite and next/previous visible sorted/filtered cell in PhiGrid.
 - The existing PhiOffice companion now supports a distinct editor-navigation host protocol, separate from the PhiDeck slide host. An approved deck session cannot authorize editor commands.
