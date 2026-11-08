@@ -6,6 +6,14 @@ OverStrings combines its existing Rust resonance event bridge with a portable, d
 
 **Quest 3 browser demo:** https://michaelwave369.github.io/OverStrings/ (Rung 5 appears after PR review, merge and successful Pages deployment).
 
+## Rung 11: PhiWrite headings and PhiGrid cell navigation
+- New **real, opt-in, UI-only** commands for next/previous Markdown heading in PhiWrite and next/previous visible sorted/filtered cell in PhiGrid.
+- The existing PhiOffice companion now supports a distinct editor-navigation host protocol, separate from the PhiDeck slide host. An approved deck session cannot authorize editor commands.
+- The user must open the active editor and enable its five-minute session. Synthetic input requires opt-in in both pages.
+- No document edits, saves, system actions, or imported-vocabulary execution. Real Quest 3 dual-window operation remains unverified.
+
+[Read Rung 11 handoff and validation guide](docs/PHIPOSE_EDITOR_NAV_R11.md).
+
 ## Rung 10: Shared ΦPose Host SDK (zero-authority)
 
 - Extract a reusable, dependency-free ESM **ScopedPhiPoseHost** validator for explicitly consented app commands.
